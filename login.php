@@ -93,14 +93,14 @@ if (!checkCookiesEnabled()) {
         <h2><?= _('Sign in to your account') ?></h2>
         <p>
         <label class='block' for="email"><?= _('Email') ?></label>
-        <input name="email" type="email" value='<?php
+        <input id='email' name="email" type="email" value='<?php
             // put the email in the field if we just registered
             if (isset($_SESSION['email'])) {
                 echo $_SESSION['email'];
             }
             ?>' required /><br>
             <label class='block' for="password"><?= _('Password') ?></label>
-            <input name="password" type="password" required /><br>
+            <input id='password' name="password" type="password" required /><br>
             <!-- form key -->
             <?= $formKey->getFormkey() ?>
         <br>
@@ -122,6 +122,8 @@ if (!checkCookiesEnabled()) {
 
 <script>
 $(document).ready(function(){
+    $('#email').val('demo@elabftw.net');
+    $('#password').val('demodemo');
 	$(".toggle_container").hide();
 	$("a.trigger").click(function(){
 		$('.toggle_container').slideToggle("slow");
