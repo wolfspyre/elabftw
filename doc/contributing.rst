@@ -27,14 +27,14 @@ Do you know several languages? Are you willing to help localize eLabFTW? You're 
 
 Languages 100% translated:
 
-* British English : en_GB.UTF8
-* Catalan : ca_ES.UTF8
-* German : de_DE.UTF8
-* French : fr_FR.UTF8
-* Italian : it_IT.UTF8
-* Spanish : es_ES.UTF8
-* Brazilian Portuguese : pt_BR.UTF8
-* Simplified Chinese : zh_CN.UTF8
+* British English : en_GB.UTF-8
+* Catalan : ca_ES.UTF-8
+* German : de_DE.UTF-8
+* French : fr_FR.UTF-8
+* Italian : it_IT.UTF-8
+* Spanish : es_ES.UTF-8
+* Brazilian Portuguese : pt_BR.UTF-8
+* Simplified Chinese : zh_CN.UTF-8
 
 
 How to translate ?
@@ -106,7 +106,7 @@ Reminders
 
 * update of SwiftMailer and mPDF is done with `composer update`
 * update of the js components is done with `bower update`
-* after update of tinymce, lang files need to be downloaded again, and the ones without proper name (ca instead of ca_ES) need to be edited (change first line to ca_ES)
+* after update of tinymce, lang files need to be downloaded again, and the mention plugin, too
 * for a new version, one needs to edit app/classes/Update.php, package.json and doc/conf.py
 
 Make a gif
