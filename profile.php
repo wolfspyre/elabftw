@@ -29,6 +29,7 @@ try {
     $Users = new Users();
     $user = $Users->read($_SESSION['userid']);
 
+    // USER INFOS
     echo "<section class='box'>";
     echo "<img src='img/user.png' alt='user' class='bot5px' /> <h4 style='display:inline'>" . _('Infos') . "</h4>";
     echo "<div class='center'>
@@ -37,8 +38,13 @@ try {
         ."<p><a href='ucp.php'>" . _('Go to user control panel') . "</a>";
     echo "</div>";
     echo "</section>";
+
+    // STATUS CHART
     require_once 'inc/statistics.php';
-    require_once 'inc/tagcloud.php';
+
+    // TAGCLOUD
+    $TagCloud = new TagCloud($_SESSION['userid']);
+    echo $TagCloud->show();
 
 } catch (Exception $e) {
     $Logs = new Logs();

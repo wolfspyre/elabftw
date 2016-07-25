@@ -3,6 +3,25 @@
 Changelog
 =========
 
+Version 1.2.4
+-------------
+
+* fix a missing `<div>` element from the sysconfig page preventing correct navigation through tabs
+
+Version 1.2.3
+-------------
+
+* fix for MySQL 5.7.5+ (see #273)
+* documentation improvements
+
+Version 1.2.2
+-------------
+
+* fix a typo preventing users from resetting their password
+* prevent duplicate tags from showing (#270)
+* improve the install experience of installing in the cloud (use dialog)
+* improve the documentation and code syntax
+
 Version 1.2.1
 -------------
 

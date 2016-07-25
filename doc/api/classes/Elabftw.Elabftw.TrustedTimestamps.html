@@ -144,28 +144,28 @@
                                 <div class="accordion" style="margin-bottom: 0">
         <div class="accordion-group">
             <div class="accordion-heading">
-                                    <a class="accordion-toggle " data-toggle="collapse" data-target="#namespace-1400174296"></a>
+                                    <a class="accordion-toggle " data-toggle="collapse" data-target="#namespace-37040987"></a>
                                 <a href="../namespaces/default.html" style="margin-left: 30px; padding-left: 0">\</a>
             </div>
-            <div id="namespace-1400174296" class="accordion-body collapse in">
+            <div id="namespace-37040987" class="accordion-body collapse in">
                 <div class="accordion-inner">
 
                                                     <div class="accordion" style="margin-bottom: 0">
         <div class="accordion-group">
             <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-111063724"></a>
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-814048501"></a>
                                 <a href="../namespaces/Elabftw.html" style="margin-left: 30px; padding-left: 0">Elabftw</a>
             </div>
-            <div id="namespace-111063724" class="accordion-body collapse ">
+            <div id="namespace-814048501" class="accordion-body collapse ">
                 <div class="accordion-inner">
 
                                                     <div class="accordion" style="margin-bottom: 0">
         <div class="accordion-group">
             <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-692087477"></a>
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-293182630"></a>
                                 <a href="../namespaces/Elabftw.Elabftw.html" style="margin-left: 30px; padding-left: 0">Elabftw</a>
             </div>
-            <div id="namespace-692087477" class="accordion-body collapse ">
+            <div id="namespace-293182630" class="accordion-body collapse ">
                 <div class="accordion-inner">
 
                     
@@ -186,7 +186,6 @@
                                                     <li class="class"><a href="../classes/Elabftw.Elabftw.ImportZip.html">ImportZip</a></li>
                                                     <li class="class"><a href="../classes/Elabftw.Elabftw.ItemsTypes.html">ItemsTypes</a></li>
                                                     <li class="class"><a href="../classes/Elabftw.Elabftw.ItemsTypesView.html">ItemsTypesView</a></li>
-                                                    <li class="class"><a href="../classes/Elabftw.Elabftw.LegacyCrypto.html">LegacyCrypto</a></li>
                                                     <li class="class"><a href="../classes/Elabftw.Elabftw.Links.html">Links</a></li>
                                                     <li class="class"><a href="../classes/Elabftw.Elabftw.Logs.html">Logs</a></li>
                                                     <li class="class"><a href="../classes/Elabftw.Elabftw.Make.html">Make</a></li>
@@ -200,6 +199,7 @@
                                                     <li class="class"><a href="../classes/Elabftw.Elabftw.StatusView.html">StatusView</a></li>
                                                     <li class="class"><a href="../classes/Elabftw.Elabftw.Sysconfig.html">Sysconfig</a></li>
                                                     <li class="class"><a href="../classes/Elabftw.Elabftw.SysconfigView.html">SysconfigView</a></li>
+                                                    <li class="class"><a href="../classes/Elabftw.Elabftw.TagCloud.html">TagCloud</a></li>
                                                     <li class="class"><a href="../classes/Elabftw.Elabftw.Tags.html">Tags</a></li>
                                                     <li class="class"><a href="../classes/Elabftw.Elabftw.TeamGroups.html">TeamGroups</a></li>
                                                     <li class="class"><a href="../classes/Elabftw.Elabftw.TeamGroupsView.html">TeamGroupsView</a></li>
@@ -1125,7 +1125,7 @@ http://www.d-mueller.de/blog/dealing-with-trusted-timestamps-in-php-rfc-3161</em
             <article class="method">
                 <h3 class="private ">runSh()</h3>
                 <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
-                <pre class="signature" style="margin-right: 54px;">runSh(string  <span class="argument">$cmd</span>) : array</pre>
+                <pre class="signature" style="margin-right: 54px;">runSh(string  <span class="argument">$cmd</span>) : \Elabftw\Elabftw\array&lt;string,null|array|\Elabftw\Elabftw\integer&gt;</pre>
                 <p><em>Run a shell command</em></p>
                 
 
@@ -1140,7 +1140,7 @@ http://www.d-mueller.de/blog/dealing-with-trusted-timestamps-in-php-rfc-3161</em
                 
                 
                                     <h4>Returns</h4>
-                    array
+                    \Elabftw\Elabftw\array<string,null|array|\Elabftw\Elabftw\integer>
                                     				
                             </article>
         </div>
@@ -1286,14 +1286,14 @@ http://www.d-mueller.de/blog/dealing-with-trusted-timestamps-in-php-rfc-3161</em
             <article class="method">
                 <h3 class="private ">getHash()</h3>
                 <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
-                <pre class="signature" style="margin-right: 54px;">getHash(  <span class="argument">$file</span>) : string</pre>
+                <pre class="signature" style="margin-right: 54px;">getHash(string  <span class="argument">$file</span>) : string</pre>
                 <p><em>Get the hash of a file</em></p>
                 
 
                                     <h4>Parameters</h4>
                     <table class="table table-condensed table-hover">
                                                     <tr>
-                                <td></td>
+                                <td>string</td>
                                 <td>$file </td>
                                 <td><p>Path to the file</p></td>
                             </tr>
@@ -1411,7 +1411,7 @@ in the timestamp itself.</em></p>
             <article class="method">
                 <h3 class="private ">validateWithJava()</h3>
                 <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
-                <pre class="signature" style="margin-right: 54px;">validateWithJava() : boolean|null</pre>
+                <pre class="signature" style="margin-right: 54px;">validateWithJava() : boolean</pre>
                 <p><em>Validate the timestamp with java and BouncyCastle lib
 We need this because of the openssl bug</em></p>
                 
@@ -1424,7 +1424,7 @@ We need this because of the openssl bug</em></p>
                                                                     </dl>
                 
                                     <h4>Returns</h4>
-                    boolean|null
+                    boolean
                                     				
                             </article>
         </div>
@@ -1568,7 +1568,7 @@ I had this idea when realizing that if you comment an experiment, the hash won&#
                 <section class="span10 offset1">
                     <hr />
                     Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor </a> and authored
-                    on June 23rd, 2016 at 13:52.
+                    on July 12th, 2016 at 12:45.
                 </section>
             </section>
         </section>

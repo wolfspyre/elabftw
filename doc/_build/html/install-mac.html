@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Install on Mac OS X &mdash; elabftw 1.2.1 documentation</title>
+  <title>Install on Mac OS X &mdash; elabftw 1.2.4 documentation</title>
   
 
   
@@ -30,7 +30,7 @@
   
 
   
-    <link rel="top" title="elabftw 1.2.1 documentation" href="index.html"/>
+    <link rel="top" title="elabftw 1.2.4 documentation" href="index.html"/>
         <link rel="next" title="Install on Windows (in Docker)" href="install-windows.html"/>
         <link rel="prev" title="Install in a Docker container" href="install-docker.html"/> 
 
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.2.1
+                1.2.4
               </div>
             
           
@@ -157,16 +157,17 @@
   <div class="section" id="install-on-mac-os-x">
 <span id="install-mac"></span><h1>Install on Mac OS X<a class="headerlink" href="#install-on-mac-os-x" title="Permalink to this headline">¶</a></h1>
 <img alt="apple" class="align-center" src="_images/apple.png" />
-<p>I am very sad that you have to <a class="reference external" href="https://www.gnu.org/proprietary/malware-apple.html">use malware</a> for your computing needs. You should try your best to convince whoever is stopping you from using a free operating system that they are wrong, whatever reasons they invoke.</p>
-<p>That being said, we&#8217;re here to install eLabFTW on Mac. So let&#8217;s get to it. The steps below describe an installation of a web server (XAMPP) directly on your Mac. It is quite complicated to install eLabFTW in a docker container on the Mac OS X platform, you will run into permissions issues that are hard to solve, so I do not recommend it. Hence this guide.</p>
+<p>The steps below describe an installation of a web server (XAMPP) directly on your Mac. When Docker for Mac will work, we&#8217;ll use that.</p>
 <div class="section" id="install-xampp">
 <h2>Install XAMPP<a class="headerlink" href="#install-xampp" title="Permalink to this headline">¶</a></h2>
-<p>Download <a class="reference external" href="https://www.apachefriends.org/download.html">XAMPP for OS X</a>. Take the greatest version number.</p>
+<p>Download <a class="reference external" href="https://www.apachefriends.org/download.html">XAMPP for OS X</a>. Take the greatest version number. Versions below 5.6 will <strong>NOT</strong> work.</p>
 <p>Now that it&#8217;s downloaded, double click it and open the installer. You can untick the XAMPP Developer Files and Learn more about Bitnami checkboxes.</p>
 <p>Once it&#8217;s installed, you let it start XAMPP. On the application manager (/Applications/XAMPP/manager-osx.app):</p>
 <ul class="simple">
 <li>Go to the tab &#8216;&#8217;&#8216;Manage Servers&#8217;&#8216;&#8217;</li>
 <li>Select MySQL Database</li>
+<li>Click Start</li>
+<li>Select Apache Webserver</li>
 <li>Click Start</li>
 </ul>
 <p>Test that everything is working by going to <a class="reference external" href="https://localhost">https://localhost</a>. You should see a warning that the certificate is not signed and cannot be trusted, which is normal. If it doesn&#8217;t work, try telling your browser to avoid proxy for local addresses.</p>
@@ -242,7 +243,7 @@ sudo chmod -R <span class="m">777</span> .
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'1.2.1',
+            VERSION:'1.2.4',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

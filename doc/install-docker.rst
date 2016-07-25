@@ -32,24 +32,35 @@ Now visit https://YOUR.IP.ADDRESS/install. You will be redirected to the registe
 
 That's all folks! The documentation below is a bonus, read it if you want to understand more how it works or if you didn't manage to configure the app.
 
+.. _docker-doc:
+
 In-depth documentation
 ----------------------
 
 How does it work?
 `````````````````
-Running eLabFTW with Docker means you'll have two containers running. One will be from the official MySQL image, running a MySQL server. The other will be the elabftw image, with a webserver and the elabftw files. In order to facilitate the whole process, we will be using `docker-compose <https://docs.docker.com/compose/install/>`_. This tool will allow us to do the configuration in a YAML file, easy to modify and copy around, and also permit easy start/stop of the containers.
+Running eLabFTW with Docker means everything needed will be provided. You'll have the correct version of every library and the webserver will be properly setup with a secure configuration. Because eLabFTW will run in a container. In fact you'll have two containers running. One will be from the official MySQL image, running a MySQL server. The other will be the eLabFTW image, with a webserver + PHP and the eLabFTW files. In order to facilitate the whole process, we will use `docker-compose <https://docs.docker.com/compose/install/>`_. This tool will allow us to do the configuration in a YAML file, easy to modify and copy around, and also permit easy start/stop of the containers.
 
 About the docker image
 ``````````````````````
 - The elabftw docker image is using `Alpine Linux <https://alpinelinux.org/>`_ as a base OS, so we get a lightweight and secure base.
-- PHP 7 is used so we get an up to date and fast PHP.
-- Nginx is used so we get the best webserver out there running our app, with a secure configuration.
+- `PHP 7 <https://secure.php.net/>`_ is used so we get an up to date and fast PHP.
+- `Nginx <http://nginx.org>`_ is used so we get the best webserver out there running our app with `HTTP/2 <https://en.wikipedia.org/wiki/HTTP/2>`_ capabilities.
+
+Using Docker, you'll also automatically benefit from some additional security features:
+
+- header X-Frame-Option
+- header X-XSS-Protection
+- header X-Content-Type-Options
+- header Strict-Transport-Security
+- use Diffie-Hellman for key exchange with 2048 bits parameter
+- use modern cipher suite and protocols for SSL. This will result in an A rating on `SSLLabs <https://www.ssllabs.com/ssltest/>`_.
 
 Editing the docker-compose.yml file
 ```````````````````````````````````
 If you've never done that before, it can look scary, hence this extended documentation ;)
 
-The first thing you need to change is the value of DB_PASSWORD. It is advised to use a very long and complex password, as you won't have to remember it. Make sure to put the same in MYSQL_PASSWORD. Change also MYSQL_ROOT_PASSWORD.
+The first thing you need to change is the value of DB_PASSWORD. It is advised to use a very long and complex password, as you won't have to remember it. Use can use `this page <https://www.grc.com/passwords.htm>`_ to get a password. Make sure to put the same in MYSQL_PASSWORD. Change also MYSQL_ROOT_PASSWORD.
 
 Then get a secret key from the `provided url <https://demo.elabftw.net/install/generateSecretKey.php>`_ and paste it in SECRET_KEY
 (this key is used to encrypt the smtp password).
