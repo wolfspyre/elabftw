@@ -3,6 +3,16 @@
 Changelog
 =========
 
+Version 1.2.6
+-------------
+
+* remove the counting of uploaded files (sysconfig page) because it may crash the php process for large number of files
+
+Version 1.2.5
+-------------
+
+* fix bug leading to first user in a new team not having correct permissions (was not admin)
+
 Version 1.2.4
 -------------
 
