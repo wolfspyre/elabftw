@@ -32,16 +32,19 @@ class Uploads extends Entity
     /**
      * Constructor
      *
-     * @param string $type experiment or items
-     * @param int $itemId
+     * @param string|null $type experiment or items
+     * @param int|null $itemId
      * @param int|null $id ID of a single file
      */
-    public function __construct($type, $itemId, $id = null)
+    public function __construct($type = null, $itemId = null, $id = null)
     {
         $this->pdo = Db::getConnection();
-        $this->type = $type;
-        $this->itemId = $itemId;
-
+        if (!is_null($type)) {
+            $this->type = $type;
+        }
+        if (!is_null($itemId)) {
+            $this->itemId = $itemId;
+        }
         if (!is_null($id)) {
             $this->setId($id);
         }
@@ -50,7 +53,7 @@ class Uploads extends Entity
     /**
      * Main method for normal file upload
      *
-     * @param string|array $file Either pass it the $_FILES array or the string of the local file path
+     * @param array $file $_FILES
      * @return bool
      */
     public function create($file)
@@ -64,6 +67,11 @@ class Uploads extends Entity
         $realName = $this->getSanitizedName($file['file']['name']);
         $longName = $this->getCleanName() . "." . Tools::getExt($realName);
         $fullPath = ELAB_ROOT . 'uploads/' . $longName;
+
+        // disallow upload of php files
+        if (Tools::getExt($realName) === 'php') {
+            throw new Exception('PHP files are forbidden!');
+        }
 
         // Try to move the file to its final place
         $this->moveFile($file['file']['tmp_name'], $fullPath);
@@ -94,6 +102,25 @@ class Uploads extends Entity
     }
 
     /**
+     * Upload a mol file from Chemdoodle
+     *
+     * @param string $mol
+     * @return bool
+     */
+    public function createFromMol($mol)
+    {
+        $realName = 'Mol-file.mol';
+        $longName = $this->getCleanName() . ".mol";
+        $fullPath = ELAB_ROOT . 'uploads/' . $longName;
+
+        if (!empty($mol) && !file_put_contents($fullPath, $mol)) {
+            throw new Exception("Could not write mol to file");
+        }
+
+        return $this->dbInsert($realName, $longName, $this->getHash($fullPath));
+    }
+
+    /**
      * Can we upload to that experiment?
      * Make sure we own it.
      *
@@ -102,7 +129,7 @@ class Uploads extends Entity
     private function checkPermission()
     {
         if ($this->type === 'experiments') {
-            if (!is_owned_by_user($this->itemId, 'experiments', $_SESSION['userid'])) {
+            if (!$this->isOwnedByUser($_SESSION['userid'], 'experiments', $this->itemId)) {
                 throw new Exception('Not your experiment!');
             }
         }
@@ -123,8 +150,8 @@ class Uploads extends Entity
     /**
      * Place a file somewhere
      *
-     * @param $string orig from
-     * @param string dest to
+     * @param string $orig from
+     * @param string $dest to
      * @throws Exception if cannot move the file
      */
     private function moveFile($orig, $dest)
@@ -238,17 +265,33 @@ class Uploads extends Entity
         return $req->fetchAll();
     }
 
+    /**
+     * Update the comment of a file
+     *
+     * @param int $id id of the file
+     * @param string $comment
+     * @return bool
+     */
+    public function updateComment($id, $comment)
+    {
+        // SQL to update single file comment
+        $sql = "UPDATE uploads SET comment = :comment WHERE id = :id";
+        $req = $this->pdo->prepare($sql);
+        $req->bindParam(':id', $id);
+        $req->bindParam(':comment', $comment);
+
+        return $req->execute();
+    }
 
     /**
      * Create a jpg thumbnail from images of type jpg, png or gif.
      *
      * @param string $src Path to the original file
-     * @param string $ext Extension of the file
      * @param string $dest Path to the place to save the thumbnail
      * @param int $desiredWidth Width of the thumbnail (height is automatic depending on width)
      * @return null|false
      */
-    public function makeThumb($src, $ext, $dest, $desiredWidth)
+    public function makeThumb($src, $dest, $desiredWidth)
     {
         // we don't want to work on too big images
         // put the limit to 5 Mbytes
@@ -256,14 +299,21 @@ class Uploads extends Entity
             return false;
         }
 
+        // get mime type of the file
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mime = finfo_file($finfo, $src);
         // the used fonction is different depending on extension
-        if (preg_match('/(jpg|jpeg)$/i', $ext)) {
-            $sourceImage = imagecreatefromjpeg($src);
-        } elseif (preg_match('/(png)$/i', $ext)) {
-            $sourceImage = imagecreatefrompng($src);
-        } elseif (preg_match('/(gif)$/i', $ext)) {
-            $sourceImage = imagecreatefromgif($src);
+        if ($mime === 'image/jpeg') {
+            $sourceImage = @imagecreatefromjpeg($src);
+        } elseif ($mime === 'image/png') {
+            $sourceImage = @imagecreatefrompng($src);
+        } elseif ($mime === 'image/gif') {
+            $sourceImage = @imagecreatefromgif($src);
         } else {
+            return false;
+        }
+
+        if ($sourceImage === false) {
             return false;
         }
 
@@ -295,13 +345,13 @@ class Uploads extends Entity
         if ($this->type === 'experiments') {
             // Check file id is owned by connected user
             if ($uploadArr['userid'] != $_SESSION['userid']) {
-                throw new Exception(_('This section is out of your reach!'));
+                throw new Exception(Tools::error(true));
             }
         } else {
             $User = new Users();
             $userArr = $User->read($_SESSION['userid']);
             if ($userArr['team'] != $_SESSION['team_id']) {
-                throw new Exception(_('This section is out of your reach!'));
+                throw new Exception(Tools::error(true));
             }
         }
 

@@ -27,11 +27,14 @@ class ExperimentsView extends EntityView
     /** Read only switch */
     private $ro = false;
 
+    /** show experiments from others in the team? */
+    private $showTeam = false;
+
     /** the UploadsView object */
     private $UploadsView;
 
     /** instance of TeamGroups */
-    private $teamGroups;
+    private $TeamGroups;
 
     /** can be tag, query or filter */
     public $searchType = '';
@@ -49,8 +52,9 @@ class ExperimentsView extends EntityView
     {
         $this->Experiments = $experiments;
         $this->limit = $_SESSION['prefs']['limit'];
+        $this->showTeam = $_SESSION['prefs']['show_team'];
 
-        $this->teamGroups = new TeamGroups();
+        $this->TeamGroups = new TeamGroups($this->Experiments->team);
     }
 
     /**
@@ -127,8 +131,13 @@ class ExperimentsView extends EntityView
 
         } else {
 
-            // get all XP items for the user
-            $itemsArr = $this->Experiments->readAll();
+            if ($this->showTeam) {
+                // get all XP from team
+                $itemsArr = $this->Experiments->readAllFromTeam();
+            } else {
+                // get all XP items for the user
+                $itemsArr = $this->Experiments->readAllFromUser();
+            }
 
         }
 
@@ -158,7 +167,7 @@ class ExperimentsView extends EntityView
         }
         $load_more_button = "<div class='center'>
             <button class='button' id='loadButton'>" . sprintf(_('Show %s more'), $this->limit) . "</button>
-            <button class='button' id='loadAllButton'>". _('Show all') . "</button>
+            <button class='button button-neutral' id='loadAllButton'>". _('Show all') . "</button>
             </div>";
         // show load more button if there are more results than the default display number
         if ($count > $this->limit) {
@@ -171,24 +180,27 @@ class ExperimentsView extends EntityView
     /**
      * Show an experiment
      *
-     * @param int $item ID of the experiment to show
+     * @param array $item a unique experiment data
      * @return string
      */
     public function showUnique($item)
     {
-        $html = "<section class='item " . $this->display . "' style='border-left: 6px solid #" . $item['color'] . "'>";
+        // dim the experiment a bit if it's not yours
+        $opacity = '1';
+        if ($this->Experiments->userid != $item['userid']) {
+            $opacity = '0.7';
+        }
+        $html = "<section class='item " . $this->display . "' style='opacity:" . $opacity . "; border-left: 6px solid #" . $item['color'] . "'>";
         $html .= "<a href='experiments.php?mode=view&id=" . $item['id'] . "'>";
 
         // show attached if there is a file attached
-        // we need an id to look for attachment
-        $this->Experiments->id = $item['id'];
-        if ($this->Experiments->hasAttachment('experiments')) {
+        if ($item['attachment']) {
             $html .= "<img style='clear:both' class='align_right' src='img/attached.png' alt='file attached' />";
         }
         // we show the abstract of the experiment on mouse hover with the title attribute
         // we check if it is our experiment. It would be best to check if we have visibility rights on it
         // but atm there is no such function. So we limit this feature to experiments we own, for simplicity.
-        if (is_owned_by_user($item['id'], 'experiments', $_SESSION['userid'])) {
+        if ($this->Experiments->isOwnedByUser($this->Experiments->userid, 'experiments', $item['id'])) {
             $bodyAbstract = str_replace("'", "", substr(strip_tags($item['body']), 0, 100));
         } else {
             $bodyAbstract = '';
@@ -225,8 +237,7 @@ class ExperimentsView extends EntityView
     {
         // load tinymce
         $html = "<script src='js/tinymce/tinymce.min.js'></script>";
-        $html .= "<menu class='border'><a href='experiments.php?mode=show'>";
-        $html .= "<img src='img/arrow-left-blue.png' class='bot5px' alt='' /> " . _('Back to experiments listing') . "</a></menu>";
+        $html .= $this->backToLink('experiments');
 
         $html .= "<section class='box' id='main_section' style='border-left: 6px solid #" . $this->experiment['color'] . "'>";
         $html .= "<img class='align_right' src='img/big-trash.png' title='delete' alt='delete' onClick=\"experimentsDestroy(" . $this->Experiments->id . ", '" . _('Delete this?') . "')\" />";
@@ -241,7 +252,7 @@ class ExperimentsView extends EntityView
 
         // DATE
         $html .= "<div class='row'><div class='col-md-4'>";
-        $html .= "<img src='img/calendar.png' class='bot5px' title='date' alt='calendar' />";
+        $html .= "<img src='img/calendar.png' title='date' alt='calendar' />";
         $html .= "<label for='datepicker'>" . _('Date') . "</label>";
         // if firefox has support for it: type = date
         // https://bugzilla.mozilla.org/show_bug.cgi?id=825294
@@ -250,7 +261,7 @@ class ExperimentsView extends EntityView
 
         // VISIBILITY
         $html .= "<div class='col-md-4'>";
-        $html .= "<img src='img/eye.png' class='bot5px' alt='visibility' />";
+        $html .= "<img src='img/eye.png' alt='visibility' />";
         $html .= "<label for='visibility_select'>" . _('Visibility') . "</label>";
         $html .= " <select id='visibility_select' onchange='updateVisibility(" . $this->Experiments->id . ", this.value)'>";
         $html .= "<option value='organization' ";
@@ -270,7 +281,7 @@ class ExperimentsView extends EntityView
         $html .= ">" . _('Only me') . "</option>";
 
         // Teamgroups
-        $teamGroupsArr = $this->teamGroups->read($_SESSION['team_id']);
+        $teamGroupsArr = $this->TeamGroups->readAll();
         foreach ($teamGroupsArr as $teamGroup) {
             $html .= "<option value='" . $teamGroup['id'] . "' ";
             if ($this->experiment['visibility'] === $teamGroup['id']) {
@@ -282,12 +293,12 @@ class ExperimentsView extends EntityView
 
         // STATUS
         $html .= "<div class='col-md-4'>";
-        $html .= "<img src='img/status.png' class='bot5px' alt='status' />";
+        $html .= "<img src='img/status.png' alt='status' />";
         $html .= "<label for='status_select'>" . ngettext('Status', 'Status', 1) . "</label>";
         $html .= " <select id='status_select' name='status' onchange='updateStatus(" . $this->Experiments->id . ", this.value)'>";
 
-        $Status = new Status();
-        $statusArr = $Status->read($_SESSION['team_id']);
+        $Status = new Status($this->Experiments->team);
+        $statusArr = $Status->readAll();
 
         foreach ($statusArr as $status) {
             $html .= "<option ";
@@ -312,12 +323,12 @@ class ExperimentsView extends EntityView
             </div></form>";
 
         // REVISIONS
-        $Revisions = new Revisions('experiments', $this->experiment['id']);
+        $Revisions = new Revisions('experiments', $this->experiment['id'], $_SESSION['userid']);
         $html .= $Revisions->showCount();
 
         // LINKS
         $html .= "<section>
-                <img src='img/link.png' class='bot5px' class='bot5px'> <h4 style='display:inline'>" . _('Linked items') . "</h4><br>";
+                <img src='img/link.png' alt='link' /> <h4 style='display:inline'>" . _('Linked items') . "</h4><br>";
         $html .= "<span id='links_div'>";
         $html .= $this->showLinks($this->Experiments->id, 'edit');
         $html .= "</span>";
@@ -352,9 +363,9 @@ class ExperimentsView extends EntityView
     private function getVisibility()
     {
         if (Tools::checkId($this->experiment['visibility'])) {
-            return $this->teamGroups->readName($this->experiment['visibility']);
+            return $this->TeamGroups->readName($this->experiment['visibility']);
         }
-        return $this->experiment['visibility'];
+        return ucfirst($this->experiment['visibility']);
     }
 
     /**
@@ -369,23 +380,23 @@ class ExperimentsView extends EntityView
             // Can the user see this experiment which is not his ?
             if ($this->experiment['visibility'] === 'user') {
 
-                throw new Exception(_("<strong>Access forbidden:</strong> the visibility setting of this experiment is set to 'owner only'."));
+                throw new Exception(Tools::error(true));
 
             } elseif (Tools::checkId($this->experiment['visibility'])) {
                 // the visibility of this experiment is set to a group
                 // we must check if current user is in this group
-                if (!$this->teamGroups->isInTeamGroup($_SESSION['userid'], $this->experiment['visibility'])) {
-                    throw new Exception(_("<strong>Access forbidden:</strong> you don't have the rights to access this."));
+                if (!$this->TeamGroups->isInTeamGroup($_SESSION['userid'], $this->experiment['visibility'])) {
+                    throw new Exception(Tools::error(true));
                 }
 
             } else {
                 $users = new Users();
                 $owner = $users->read($this->experiment['userid']);
 
-                if ($owner['team'] != $_SESSION['team_id']) {
+                if ($owner['team'] != $this->Experiments->team) {
                     // the experiment needs to be organization for us to see it as we are not in the team of the owner
                     if ($this->experiment['visibility'] != 'organization') {
-                        throw new Exception(_("<strong>Access forbidden:</strong> you don't have the rights to access this."));
+                        throw new Exception(Tools::error(true));
                     }
                 }
                 // read only
@@ -419,7 +430,7 @@ class ExperimentsView extends EntityView
         return display_message(
             'ok_nocross',
             _('Experiment was timestamped by') . " " . $timestamper['firstname'] . " " . $timestamper['lastname'] . " " . _('on') . " " . $date->format('Y-m-d') . " " . _('at') . " " . $date->format('H:i:s') . " "
-            . $date->getTimezone()->getName() . " <a href='uploads/" . $pdf[0]['long_name'] . "'><img src='img/pdf.png' class='bot5px' title='" . _('Download timestamped pdf') . "' alt='pdf' /></a> <a href='uploads/" . $token[0]['long_name'] . "'><img src='img/download.png' title=\"" . _('Download token') . "\" alt='token' class='bot5px' /></a>"
+            . $date->getTimezone()->getName() . " <a href='uploads/" . $pdf[0]['long_name'] . "'><img src='img/pdf.png' title='" . _('Download timestamped pdf') . "' alt='pdf' /></a> <a href='uploads/" . $token[0]['long_name'] . "'><img src='img/download.png' title=\"" . _('Download token') . "\" alt='token' /></a>"
         );
     }
 
@@ -430,30 +441,43 @@ class ExperimentsView extends EntityView
     private function buildView()
     {
         $html = '';
+        $html .= $this->backToLink('experiments');
 
         if ($this->ro) {
-            $message = _('Read-only mode.');
+            $Users = new Users();
+            $userArr = $Users->read($this->experiment['userid']);
+            $ownerName = $userArr['firstname'] . ' ' . $userArr['lastname'];
+            $message = sprintf(_('Read-only mode. Experiment of %s.'), $ownerName);
             $html .= display_message('ok', $message);
         }
 
         $html .= "<section class='item' style='padding:15px;border-left: 6px solid #" . $this->experiment['color'] . "'>";
         $html .= "<span class='top_right_status'><img src='img/status.png'>" . $this->experiment['name'] .
             "<img src='img/eye.png' alt='eye' />" . $this->getVisibility() . "</span>";
-        $html .= "<div><img src='img/calendar.png' class='bot5px' title='date' alt='Date :' /> " .
+        $html .= "<div><img src='img/calendar.png' title='date' alt='Date :' /> " .
             Tools::formatDate($this->experiment['date']) . "</div>
-        <a href='experiments.php?mode=edit&id=" . $this->experiment['id'] . "'><img src='img/pen-blue.png' title='edit' alt='edit' /></a>
-    <a href='app/controllers/ExperimentsController.php?duplicateId=" . $this->experiment['id'] . "'><img src='img/duplicate.png' title='duplicate experiment' alt='duplicate' /></a>
-    <a href='make.php?what=pdf&id=" . $this->experiment['id'] . "&type=experiments'><img src='img/pdf.png' title='make a pdf' alt='pdf' /></a>
-    <a href='make.php?what=zip&id=" . $this->experiment['id'] . "&type=experiments'><img src='img/zip.png' title='make a zip archive' alt='zip' /></a> ";
+        <a class='elab-tooltip' href='experiments.php?mode=edit&id=" . $this->experiment['id'] . "'><span>Edit</span><img src='img/pen-blue.png' alt='Edit' /></a>
+    <a class='elab-tooltip' href='app/controllers/ExperimentsController.php?duplicateId=" . $this->experiment['id'] . "'><span>Duplicate Experiment</span><img src='img/duplicate.png' alt='Duplicate' /></a>
+    <a class='elab-tooltip' href='make.php?what=pdf&id=" . $this->experiment['id'] . "&type=experiments'><span>Make a PDF</span><img src='img/pdf.png' alt='PDF' /></a>
+    <a class='elab-tooltip' href='make.php?what=zip&id=" . $this->experiment['id'] . "&type=experiments'><span>Make a ZIP</span><img src='img/zip.png' alt='ZIP' /></a> ";
 
-        if ($this->experiment['locked'] == 0) {
-            $html .= "<a href='app/lock.php?id=" . $this->experiment['id'] . "&type=experiments'><img src='img/unlock.png' title='lock experiment' alt='lock' /></a>";
-        } else { // experiment is locked
-            $html .= "<a href='app/lock.php?id=" . $this->experiment['id'] . "&type=experiments'><img src='img/lock-gray.png' title='unlock experiment' alt='unlock' /></a>";
-            // show timestamp button if it's not timestamped already
-            if (!$this->experiment['timestamped']) {
-                $html .= "<a onClick=\"return confirm('" . _('Once timestamped an experiment cannot be edited anymore ! Are you sure you want to do this ?') . "')\" href='app/timestamp.php?id=" . $this->experiment['id'] . "'><img src='img/stamp.png' title='timestamp experiment' alt='timestamp' /></a>";
+        // lock
+        $onClick = " onClick=\"toggleLock('experiments', " . $this->experiment['id'] . ")\"";
+        $imgSrc = 'unlock.png';
+        $alt = _('Lock/Unlock item');
+        if ($this->experiment['locked'] != 0) {
+            $imgSrc = 'lock-gray.png';
+            // don't allow clicking lock if experiment is timestamped
+            if ($this->experiment['timestamped']) {
+                $onClick = '';
             }
+        }
+        $html .= "<a class='elab-tooltip' href='#'><span>" . $alt . "</span><img id='lock'" . $onClick . " src='img/" . $imgSrc . "' alt='" . $alt . "' /></a> ";
+        // show timestamp button if not timestamped already
+        if (!$this->experiment['timestamped']) {
+            $onClick = " onClick=\"timestamp(" . $this->experiment['id'] . ", '" . _('Once timestamped an experiment cannot be edited anymore! Are you sure you want to do this?') . "')\"";
+
+            $html .= "<a class='elab-tooltip'><span>Timestamp Experiment</span><img" . $onClick . " src='img/stamp.png' alt='Timestamp' /></a>";
         }
 
         $html .= $this->showTags('experiments', 'view', $this->Experiments->id);
@@ -494,109 +518,82 @@ class ExperimentsView extends EntityView
         $tags = new Tags('experiments', $this->Experiments->id);
 
         $html = "<script>
-            function delete_tag(tag_id, item_id) {
-                var you_sure = confirm('" . _('Delete this?') . "');
-                if (you_sure == true) {
-                    $.post('app/delete.php', {
-                        id: tag_id,
-                        item_id: item_id,
-                        type: 'exptag'
-                    }).done(function () {
-                        $('#tags_div').load('experiments.php?mode=edit&id=' + item_id + ' #tags_div');
-                    })
+        // READY ? GO !!
+        $(document).ready(function() {
+            // KEYBOARD SHORTCUTS
+            key('" . $_SESSION['prefs']['shortcuts']['create'] . "', function(){location.href = 'app/controllers/ExperimentsController?create=true'});
+            key('" . $_SESSION['prefs']['shortcuts']['submit'] . "', function(){document.forms['editXP'].submit()});
+
+            // autocomplete the tags
+            $('#createTagInput').autocomplete({
+                source: [" . $tags->generateTagList() . "]
+            });
+
+            // autocomplete the links
+            $( '#linkinput' ).autocomplete({
+                source: [" . getDbList('default') . "]
+            });
+
+            // CREATE TAG
+            // listen keypress, add tag when it's enter
+            $('#createTagInput').keypress(function (e) {
+                createTag(e, " . $this->Experiments->id . ", 'experiments');
+            });
+            // CREATE LINK
+            // listen keypress, add link when it's enter
+            $('#linkinput').keypress(function (e) {
+                experimentsCreateLink(e, " . $this->Experiments->id . ");
+            });
+
+            // DATEPICKER
+            $( '#datepicker' ).datepicker({dateFormat: 'yymmdd'});
+            // If the title is 'Untitled', clear it on focus
+            $('#title_input').focus(function(){
+                if ($(this).val() === 'Untitled') {
+                    $('#title_input').val('');
                 }
-                return false;
-            }
-
-    // READY ? GO !!
-    $(document).ready(function() {
-        // KEYBOARD SHORTCUTS
-        key('" . $_SESSION['prefs']['shortcuts']['create'] . "', function(){location.href = 'app/controllers/ExperimentsController?create=true'});
-        key('" . $_SESSION['prefs']['shortcuts']['submit'] . "', function(){document.forms['editXP'].submit()});
-
-        // autocomplete the tags
-        $('#createTagInput').autocomplete({
-            source: [" . $tags->generateTagList() . "]
-        });
-
-        // autocomplete the links
-        $( '#linkinput' ).autocomplete({
-            source: [" . getDbList('default') . "]
-        });
-
-        // CREATE TAG
-        // listen keypress, add tag when it's enter
-        $('#createTagInput').keypress(function (e) {
-            createTag(e, " . $this->Experiments->id . ", 'experiments');
-        });
-        // CREATE LINK
-        // listen keypress, add link when it's enter
-        $('#linkinput').keypress(function (e) {
-            experimentsCreateLink(e, " . $this->Experiments->id . ");
-        });
-
-        // DATEPICKER
-        $( '#datepicker' ).datepicker({dateFormat: 'yymmdd'});
-        // If the title is 'Untitled', clear it on focus
-        $('#title_input').focus(function(){
-            if ($(this).val() === 'Untitled') {
-                $('#title_input').val('');
-            }
-        });
-        // EDITOR
-        tinymce.init({
-            mode : 'specific_textareas',
-            editor_selector : 'mceditable',
-            content_css : 'css/tinymce.css',
-            plugins : 'table textcolor searchreplace code fullscreen insertdatetime paste charmap save image link pagebreak mention',
-            pagebreak_separator: '<pagebreak>',
-            toolbar1: 'undo redo | bold italic underline | fontsizeselect | alignleft aligncenter alignright alignjustify | superscript subscript | bullist numlist outdent indent | forecolor backcolor | charmap | image link | save',
-            removed_menuitems : 'newdocument',
-            // save button :
-            save_onsavecallback: function() {
-                $.post('app/quicksave.php', {
-                    id : " . $this->Experiments->id . ",
-                    type : 'experiments',
-                    // we need this to get the updated content
-                    title : document.getElementById('title_input').value,
-                    date : document.getElementById('datepicker').value,
-                    body : tinymce.activeEditor.getContent()
-                }).done(function(data) {
-                    if (data == 1) {
-                        notif('" . _('Saved') . "', 'ok');
-                    } else {
-                        notif('" . _('Something went wrong! :(') . "', 'ko');
-                    }
-                });
-            },
-            // keyboard shortcut to insert today's date at cursor in editor
-            setup : function(editor) {
-                editor.addShortcut('ctrl+shift+d', 'add date at cursor', function() { addDateOnCursor(); });
-            },
-            mentions: {
-                source: [" . getDbList('mention') . "],
-                delimiter: '#'
-            },
-            language : '" . $_SESSION['prefs']['lang'] . "',
-            style_formats_merge: true,
-            style_formats: [
-                {
-                    title: 'Image Left',
-                    selector: 'img',
-                    styles: {
-                        'float': 'left',
-                        'margin': '0 10px 0 10px'
-                    }
-                 },
-                 {
-                     title: 'Image Right',
-                     selector: 'img',
-                     styles: {
-                         'float': 'right',
-                         'margin': '0 0 10px 10px'
+            });
+            // EDITOR
+            tinymce.init({
+                mode : 'specific_textareas',
+                editor_selector : 'mceditable',
+                content_css : 'app/css/tinymce.css',
+                plugins : 'table textcolor searchreplace code fullscreen insertdatetime paste charmap save image link pagebreak mention',
+                pagebreak_separator: '<pagebreak>',
+                toolbar1: 'undo redo | bold italic underline | fontsizeselect | alignleft aligncenter alignright alignjustify | superscript subscript | bullist numlist outdent indent | forecolor backcolor | charmap | image link | save',
+                removed_menuitems : 'newdocument',
+                // save button :
+                save_onsavecallback: function() {
+                    quickSave('experiments', " . $this->Experiments->id . ");
+                },
+                // keyboard shortcut to insert today's date at cursor in editor
+                setup : function(editor) {
+                    editor.addShortcut('ctrl+shift+d', 'add date at cursor', function() { addDateOnCursor(); });
+                },
+                mentions: {
+                    source: [" . getDbList('mention') . "],
+                    delimiter: '#'
+                },
+                language : '" . $_SESSION['prefs']['lang'] . "',
+                style_formats_merge: true,
+                style_formats: [
+                    {
+                        title: 'Image Left',
+                        selector: 'img',
+                        styles: {
+                            'float': 'left',
+                            'margin': '0 10px 0 10px'
+                        }
+                     },
+                     {
+                         title: 'Image Right',
+                         selector: 'img',
+                         styles: {
+                             'float': 'right',
+                             'margin': '0 0 10px 10px'
+                         }
                      }
-                 }
-            ]
+                ]
         });";
 
         $html .= $this->injectCloseWarning();

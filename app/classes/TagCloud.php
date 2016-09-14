@@ -73,8 +73,9 @@ class TagCloud
         $tags = $this->readAll();
 
         $html = "<section class='box'>";
-        $html .= "<img src='img/cloud.png' alt='' class='bot5px' /> <h4 style='display:inline'>" . _('Tag cloud') . "</h4>";
-        $html .= "<div class='center'>";
+        $html .= "<img src='img/cloud.png' alt='' /> <h4 style='display:inline'>" . _('Tag cloud') . "</h4>";
+        $html .= "<hr>";
+        $html .= "<div>";
 
         // handle minimum tag count
         if (count($tags) <= 10) {

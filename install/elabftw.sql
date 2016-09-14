@@ -203,6 +203,7 @@ CREATE TABLE `items_types` (
   `bgcolor` varchar(6) DEFAULT '000000',
   `template` text,
   `ordering` int(10) unsigned DEFAULT NULL,
+  `bookable` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -303,6 +304,7 @@ CREATE TABLE `users` (
   `sc_edit` varchar(1) NOT NULL DEFAULT 'e',
   `sc_submit` varchar(1) NOT NULL DEFAULT 's',
   `sc_todo` varchar(1) NOT NULL DEFAULT 't',
+  `show_team` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `close_warning` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `chem_editor` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `validated` tinyint(1) NOT NULL DEFAULT '0',
@@ -338,6 +340,24 @@ CREATE TABLE IF NOT EXISTS `users2team_groups` (
   `groupid` int(10) unsigned NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Table structure for table `team_events`
+--
+
+CREATE TABLE IF NOT EXISTS `team_events` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `team` int(10) UNSIGNED NOT NULL,
+  `item` int(10) UNSIGNED NOT NULL,
+  `start` varchar(255) NOT NULL,
+  `end` varchar(255) DEFAULT NULL,
+  `title` varchar(255) DEFAULT NULL,
+  `userid` int(10) UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+
 -- ELABFTW
 /* the default item_types */
 INSERT INTO `items_types` (`team`, `id`, `name`, `bgcolor`, `template`) VALUES
@@ -345,10 +365,10 @@ INSERT INTO `items_types` (`team`, `id`, `name`, `bgcolor`, `template`) VALUES
 
 /* the default status */
 INSERT INTO `status` (`team`, `id`, `name`, `color`, `is_default`) VALUES
-(1, 1, 'Running', '0096ff', 1),
-(1, 2, 'Success', '00ac00', 0),
+(1, 1, 'Running', '29AEB9', 1),
+(1, 2, 'Success', '54aa08', 0),
 (1, 3, 'Need to be redone', 'c0c0c0', 0),
-(1, 4, 'Fail', 'ff0000', 0);
+(1, 4, 'Fail', 'c24f3d', 0);
 
 /* the default experiment template */
 INSERT INTO `experiments_templates` (`team`, `body`, `name`, `userid`) VALUES
@@ -388,4 +408,4 @@ INSERT INTO `config` (`conf_name`, `conf_value`) VALUES
 ('stampprovider', 'http://zeitstempel.dfn.de/'),
 ('stampcert', 'vendor/pki.dfn.pem'),
 ('stamphash', 'sha256'),
-('schema', '9');
+('schema', '11');

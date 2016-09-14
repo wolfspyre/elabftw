@@ -21,9 +21,6 @@ class Auth
     /** Used to store the PDO object */
     protected $pdo;
 
-    /** The salt of the user */
-    private $salt;
-
     /** Everything about the user */
     private $userData;
 
@@ -43,14 +40,15 @@ class Auth
      * Get the salt for the user so we can generate a correct hash
      *
      * @param string $email
+     * @return string
      */
-    private function setSalt($email)
+    private function getSalt($email)
     {
         $sql = "SELECT salt FROM users WHERE email = :email";
         $req = $this->pdo->prepare($sql);
         $req->bindParam(':email', $email);
         $req->execute();
-        $this->salt = $req->fetchColumn();
+        return $req->fetchColumn();
     }
 
     /**
@@ -62,9 +60,7 @@ class Auth
      */
     public function checkCredentials($email, $password)
     {
-        $this->setSalt($email);
-
-        $passwordHash = hash('sha512', $this->salt . $password);
+        $passwordHash = hash('sha512', $this->getSalt($email) . $password);
 
         $sql = "SELECT * FROM users WHERE email = :email AND password = :passwordHash AND validated = 1";
         $req = $this->pdo->prepare($sql);
@@ -121,7 +117,8 @@ class Auth
             'shortcuts' => array('create' => $this->userData['sc_create'], 'edit' => $this->userData['sc_edit'], 'submit' => $this->userData['sc_submit'], 'todo' => $this->userData['sc_todo']),
             'lang' => $this->userData['lang'],
             'close_warning' => intval($this->userData['close_warning']),
-            'chem_editor' => intval($this->userData['chem_editor']));
+            'chem_editor' => intval($this->userData['chem_editor']),
+            'show_team' => intval($this->userData['show_team']));
         // Make a unique token and store it in sql AND cookie
         $this->token = md5(uniqid(rand(), true));
         // and SESSION

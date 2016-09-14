@@ -35,7 +35,7 @@ class UploadsView extends EntityView
     public function buildUploadForm()
     {
         $html = "<section class='box'>";
-        $html .= "<img src='img/attached.png' class='bot5px'> ";
+        $html .= "<img src='img/attached.png' /> ";
         $html .= "<h3 style='display:inline'>" . _('Attach a file') . "</h3>";
         $html .= "<form action='app/controllers/EntityController.php' class='dropzone' id='elabftw-dropzone'></form>";
         $html .= "</section>";
@@ -65,27 +65,23 @@ class UploadsView extends EntityView
                 // once it is done
                 this.on('complete', function(answer) {
                     // check the answer we get back from app/uploads.php
-                    if (answer.xhr.responseText != 0) {
-                        alert('Upload failed: ' + answer.xhr.responseText);
+                    var json = JSON.parse(answer.xhr.responseText);
+                    if (json.res) {
+                        notif(json.msg, 'ok');
+                    } else {
+                        notif(json.msg, 'ko');
                     }
                     // reload the #filesdiv once the file is uploaded
                     if (this.getUploadingFiles().length === 0 && this.getQueuedFiles().length === 0) {
                         $('#filesdiv').load(type + '.php?mode=edit&id=' + item_id + ' #filesdiv', function() {
                             // make the comment zone editable (fix issue #54)
-                            $('.thumbnail p.editable').editable('app/editinplace.php', {
-                             indicator : 'Saving...',
-                             id   : 'id',
-                             name : 'filecomment',
-                             submit : 'Save',
-                             cancel : 'Cancel',
-                             style : 'display:inline'
-                            });
+                            makeEditableFileComment();
                         });
                     }
                 });
             }
-        };
-        </script>";
+        }
+            </script>";
         return $html;
     }
 
@@ -113,7 +109,7 @@ class UploadsView extends EntityView
         // begin HTML build
         $html = "<div id='filesdiv'>";
         $html .= "<div class='box'>";
-        $html .= "<img src='img/attached.png' class='bot5px'> <h3 style='display:inline'>" .
+        $html .= "<img src='img/attached.png' /> <h3 style='display:inline'>" .
             ngettext('Attached file', 'Attached files', $count) . "</h3>";
         $html .= "<div class='row'>";
         foreach ($uploadsArr as $upload) {
@@ -139,7 +135,7 @@ class UploadsView extends EntityView
 
             // Make thumbnail only if it isn't done already
             if (!file_exists($thumbpath)) {
-                $this->Uploads->makeThumb($filepath, $ext, $thumbpath, 100);
+                $this->Uploads->makeThumb($filepath, $thumbpath, 100);
             }
 
             // only display the thumbnail if the file is here
@@ -175,7 +171,7 @@ class UploadsView extends EntityView
             }
 
             // now display the name + comment with icons
-            $html .= "<div class='caption'><img src='img/attached.png' class='bot5px' alt='attached' /> ";
+            $html .= "<div class='caption'><img src='img/attached.png' alt='attached' /> ";
             $html .= "<a href='app/download.php?f=" . $upload['long_name'] .
                 "&name=" . $upload['real_name'] . "' target='_blank'>" . $upload['real_name'] . "</a>";
             $html .= "<span class='smallgray' style='display:inline'> " .
@@ -185,7 +181,7 @@ class UploadsView extends EntityView
             // your are in view mode
 
             if ($mode === 'edit' || ($upload['comment'] != 'Click to add a comment')) {
-                $comment = "<img src='img/comment.png' class='bot5px' alt='comment' />
+                $comment = "<img src='img/comment.png' alt='comment' />
                             <p class='editable inline' id='filecomment_" . $upload['id'] . "'>" .
                 stripslashes($upload['comment']) . "</p>";
                 $html .= $comment;
@@ -194,25 +190,17 @@ class UploadsView extends EntityView
         } // end foreach
         $html .= "</div></div></div>";
 
-        // add fancy stuff in edit mode
-        if ($mode === 'edit') {
-            $html .= "<script>
-                $('.thumbnail').on('mouseover', '.editable', function(){
-                $('.thumbnail p.editable').editable('app/editinplace.php', {
-                 tooltip : 'Click to edit',
-                 indicator : 'Saving...',
-                 name : 'filecomment',
-                 submit : 'Save',
-                 cancel : 'Cancel',
-                 style : 'display:inline'
-                });
-            });</script>";
-        }
         $html .= "<script>$(document).ready(function() {
                 // we use fancybox to display thumbnails
-                $('a.fancybox').fancybox();
-            });
-            </script>";
+                $('a.fancybox').fancybox();";
+
+        // add editable comments in edit mode
+        if ($mode === 'edit') {
+            $html .= "$('.thumbnail').on('mouseover', '.editable', function(){
+                    makeEditableFileComment();
+                });";
+        }
+        $html .= "});</script>";
         return $html;
     }
 }

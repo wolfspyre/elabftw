@@ -16,7 +16,7 @@ use Exception;
  * Deal with post requests coming from ucp.php
  *
  */
-require_once '../inc/common.php';
+require_once '../app/init.inc.php';
 
 $tab = '1';
 
@@ -65,6 +65,13 @@ try {
         $new_sc_submit = substr($_POST['submit'], 0, 1);
         $new_sc_todo = substr($_POST['todo'], 0, 1);
 
+        // SHOW TEAM
+        if (isset($_POST['show_team']) && $_POST['show_team'] === 'on') {
+            $new_show_team = 1;
+        } else {
+            $new_show_team = 0;
+        }
+
         // CLOSE WARNING
         if (isset($_POST['close_warning']) && $_POST['close_warning'] === 'on') {
             $new_close_warning = 1;
@@ -97,6 +104,7 @@ try {
             sc_edit = :new_sc_edit,
             sc_submit = :new_sc_submit,
             sc_todo = :new_sc_todo,
+            show_team = :new_show_team,
             close_warning = :new_close_warning,
             chem_editor = :new_chem_editor,
             lang = :new_lang
@@ -111,6 +119,7 @@ try {
             'new_sc_edit' => $new_sc_edit,
             'new_sc_submit' => $new_sc_submit,
             'new_sc_todo' => $new_sc_todo,
+            'new_show_team' => $new_show_team,
             'new_close_warning' => $new_close_warning,
             'new_chem_editor' => $new_chem_editor,
             'new_lang' => $new_lang,
@@ -125,6 +134,7 @@ try {
         $_SESSION['prefs']['shortcuts']['edit'] = $new_sc_edit;
         $_SESSION['prefs']['shortcuts']['submit'] = $new_sc_submit;
         $_SESSION['prefs']['shortcuts']['todo'] = $new_sc_todo;
+        $_SESSION['prefs']['show_team'] = $new_show_team;
         $_SESSION['prefs']['close_warning'] = $new_close_warning;
         $_SESSION['prefs']['chem_editor'] = $new_chem_editor;
         $_SESSION['prefs']['lang'] = $new_lang;
@@ -228,7 +238,7 @@ try {
             'website' => $website,
             'userid' => $_SESSION['userid']));
         if (!$result) {
-            throw new Exception(_('Error updating database'));
+            throw new Exception(Tools::error());
         }
 
         $_SESSION['ok'][] = _('Profile updated.');
@@ -251,16 +261,10 @@ try {
 
         $tpl_name = filter_var($_POST['new_tpl_name'], FILTER_SANITIZE_STRING);
         $tpl_body = Tools::checkBody($_POST['new_tpl_body']);
-        $sql = "INSERT INTO experiments_templates(team, name, body, userid) VALUES(:team, :name, :body, :userid)";
-        $req = $pdo->prepare($sql);
-        $result = $req->execute(array(
-            'team' => $_SESSION['team_id'],
-            'name' => $tpl_name,
-            'body' => $tpl_body,
-            'userid' => $_SESSION['userid']
-        ));
-        if (!$result) {
-            throw new Exception(_('Error updating database'));
+
+        $Templates = new Templates($_SESSION['team_id']);
+        if (!$Templates->create($tpl_name, $tpl_body, $_SESSION['userid'])) {
+            throw new Exception(Tools::error());
         }
         $_SESSION['ok'][] = _('Experiment template successfully added.');
     }

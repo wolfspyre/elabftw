@@ -131,7 +131,8 @@ class Users extends Auth
         // Give it a body
         ->setBody(_('Hi. A new user registered on elabftw. Head to the admin panel to validate the account.') . $footer);
         // generate Swift_Mailer instance
-        $mailer = getMailer();
+        $Email = new Email(new Config);
+        $mailer = $Email->getMailer();
         // SEND EMAIL
         try {
             $mailer->send($message);
@@ -245,7 +246,23 @@ class Users extends Auth
     }
 
     /**
-     * Read all users
+     * Select by email
+     *
+     * @param string $email
+     * @return array
+     */
+    public function readFromEmail($email)
+    {
+        $sql = "SELECT userid, CONCAT(firstname, ' ', lastname) AS name FROM users WHERE email = :email";
+        $req = $this->pdo->prepare($sql);
+        $req->bindParam(':email', $email);
+        $req->execute();
+
+        return $req->fetch();
+    }
+
+    /**
+     * Read all users from the team
      *
      * @param int validated
      * @return array
@@ -256,6 +273,20 @@ class Users extends Auth
         $req = $this->pdo->prepare($sql);
         $req->bindValue(':validated', $validated);
         $req->bindValue(':team', $_SESSION['team_id']);
+        $req->execute();
+
+        return $req->fetchAll();
+    }
+
+    /**
+     * Get email for every single user
+     *
+     * @return array
+     */
+    public function getAllEmails()
+    {
+        $sql = "SELECT email FROM users WHERE validated = 1";
+        $req = $this->pdo->prepare($sql);
         $req->execute();
 
         return $req->fetchAll();
@@ -273,11 +304,6 @@ class Users extends Auth
         $userid = Tools::checkId($params['userid']);
         if ($userid === false) {
             throw new Exception(_('The id parameter is not valid!'));
-        }
-
-        // permission check
-        if (!isset($_SESSION['is_admin'])) {
-            throw new Exception(_('This section is out of your reach.'));
         }
 
         // Put everything lowercase and first letter uppercase
@@ -388,11 +414,6 @@ class Users extends Auth
             throw new Exception('The id parameter is not valid!');
         }
 
-        // permission check
-        if (!isset($_SESSION['is_admin'])) {
-            throw new Exception(_('This section is out of your reach.'));
-        }
-
         $sql = "UPDATE users SET validated = 1 WHERE userid = :userid";
         $req = $this->pdo->prepare($sql);
 
@@ -405,7 +426,7 @@ class Users extends Auth
         if ($req->execute()) {
             $msg = _('Validated user with ID :') . ' ' . $userid;
         } else {
-            $msg = _('Error validating user!');
+            $msg = Tools::error();
         }
         // now let's get the URL so we can have a nice link in the email
         $url = 'https://' . $_SERVER['SERVER_NAME'] . ':' . $_SERVER['SERVER_PORT'] . $_SERVER['PHP_SELF'];
@@ -424,7 +445,8 @@ class Users extends Auth
         // Give it a body
         ->setBody('Hello. Your account on eLabFTW was validated by an admin. Follow this link to login : ' . $url . $footer);
         // generate Swift_Mailer instance
-        $mailer = getMailer();
+        $Email = new Email(new Config);
+        $mailer = $Email->getMailer();
         // now we try to send the email
         try {
             $mailer->send($message);
@@ -523,7 +545,7 @@ class Users extends Auth
     {
         // only sysadmin can do that
         if (!$_SESSION['is_sysadmin']) {
-            throw new Exception('This section is out of your reach.');
+            throw new Exception(Tools::error(true));
         }
 
         // check we have a valid email

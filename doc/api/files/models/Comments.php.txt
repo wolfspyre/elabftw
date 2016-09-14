@@ -45,7 +45,7 @@ class Comments extends Entity
      * Create a comment
      *
      * @param string $comment Content for the comment
-     * @return bool
+     * @return int number of email sent
      */
     public function create($comment)
     {
@@ -70,10 +70,13 @@ class Comments extends Entity
      * Send an email to the experiment owner to alert a comment was posted
      * (issue #160)
      *
-     * @return bool
+     * @return int number of email sent
      */
     private function alertOwner()
     {
+        $Config = new Config();
+        $configArr = $Config->read();
+
         // get the first and lastname of the commenter
         $sql = "SELECT firstname, lastname FROM users WHERE userid = :userid";
         $req = $this->pdo->prepare($sql);
@@ -105,7 +108,7 @@ class Comments extends Entity
         // Give the message a subject
         ->setSubject(_('[eLabFTW] New comment posted'))
         // Set the From address with an associative array
-        ->setFrom(array(get_config('mail_from') => 'eLabFTW'))
+        ->setFrom(array($configArr['mail_from'] => 'eLabFTW'))
         // Set the To addresses with an associative array
         ->setTo(array($users['email'] => $users['firstname'] . $users['lastname']))
         // Give it a body
@@ -115,7 +118,8 @@ class Comments extends Entity
             $commenter['lastname'],
             $full_url
         ) . $footer);
-        $mailer = getMailer();
+        $Email = new Email(new Config);
+        $mailer = $Email->getMailer();
 
         return $mailer->send($message);
     }

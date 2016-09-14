@@ -33,7 +33,11 @@ class Tags extends Entity
     public function __construct($type, $id)
     {
         $this->pdo = Db::getConnection();
-        $this->type = $type;
+        if ($type === 'experiments' || $type === 'items') {
+            $this->type = $type;
+        } else {
+            throw new Exception('Invalid type');
+        }
         $this->setId($id);
     }
 
@@ -53,8 +57,8 @@ class Tags extends Entity
             throw new Exception(_('Tag is too short!'));
         }
 
-        if ($this->type === 'experiments' && !is_owned_by_user($this->id, $this->type, $_SESSION['userid'])) {
-            throw new Exception(_('This section is out of your reach!'));
+        if ($this->type === 'experiments' && !$this->isOwnedByUser($_SESSION['userid'], $this->type, $this->id)) {
+            throw new Exception(Tools::error(true));
         }
 
         if ($this->type === 'experiments') {
@@ -145,10 +149,30 @@ class Tags extends Entity
 
         $tagList = "";
         while ($tag = $req->fetch()) {
-            $tagList .= "'" . $tag['tag'] . "',";
+            $tagList .= "'" . addslashes(html_entity_decode($tag['tag'], ENT_QUOTES)) . "',";
         }
 
         return $tagList;
+    }
+
+    /**
+     * Destroy a tag
+     *
+     * @param int $userid
+     * @param int $id id of the tag
+     * @return bool
+     */
+    public function destroy($userid, $id)
+    {
+        if ($this->type === 'experiments' && !$this->isOwnedByUser($userid, $this->type, $this->id)) {
+            throw new Exception(Tools::error(true));
+        }
+
+        $sql = "DELETE FROM " . $this->type . "_tags WHERE id = :id";
+        $req = $this->pdo->prepare($sql);
+        $req->bindParam(':id', $id);
+
+        return $req->execute();
     }
 
     /**

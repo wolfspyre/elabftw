@@ -12,6 +12,7 @@ namespace Elabftw\Elabftw;
 
 use \RecursiveIteratorIterator;
 use \RecursiveDirectoryIterator;
+use Exception;
 
 /**
  * Toolbelt full of useful functions
@@ -22,7 +23,7 @@ class Tools
      * Return the date as YYYYMMDD format if no input
      * return input if it is valid
      *
-     * @param string 20160521
+     * @param string $input 20160521
      * @return string
      */
     public static function kdate($input = null)
@@ -256,15 +257,15 @@ class Tools
     /**
      * Display a generic error message
      *
+     * @param bool $permission show the out of reach message for permission message
      * @return string
      */
-    public static function error()
+    public static function error($permission = false)
     {
-        return sprintf(
-            _("There was an unexpected problem! Please %sopen an issue on GitHub%s if you think this is a bug."),
-            "<a href='https://github.com/elabftw/elabftw/issues/'>",
-            "</a>"
-        );
+        if ($permission) {
+            return _("This section is out of your reach!");
+        }
+        return _("An error occured!");
     }
 
     /**
@@ -313,5 +314,47 @@ class Tools
         shuffle($ftwArr);
 
         return $ftwArr[0];
+    }
+
+    /**
+     * Return a lang to use with fullcalendar from the pref
+     *
+     * @param string $lang 'pt_BR' or 'fr_FR'
+     * @return string
+     */
+    public static function getCalendarLang($lang)
+    {
+        $map = array(
+            'en_GB' => 'en',
+            'ca_ES' => 'ca',
+            'de_DE' => 'de',
+            'es_ES' => 'es',
+            'fr_FR' => 'fr',
+            'it_IT' => 'it',
+            'pt_BR' => 'pt-br',
+            'zh_CN' => 'zh-cn'
+        );
+        return $map[$lang];
+    }
+
+    /**
+     * Get an associative array for the langs to display in a select
+     *
+     * @return array
+     */
+    public static function getLangsArr()
+    {
+        $langs = array(
+            'en_GB' => 'English (UK)',
+            'ca_ES' => 'Spanish (Catalan)',
+            'de_DE' => 'German',
+            'es_ES' => 'Spanish',
+            'fr_FR' => 'French',
+            'it_IT' => 'Italian',
+            'pt_BR' => 'Portuguese (Brazilian)',
+            'zh_CN' => 'Chinese Simplified'
+        );
+
+        return $langs;
     }
 }

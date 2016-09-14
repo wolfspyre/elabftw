@@ -17,10 +17,10 @@ use \Exception;
  * Entry point for all experiment stuff
  *
  */
-require_once 'inc/common.php';
+require_once 'app/init.inc.php';
 $page_title = ngettext('Experiment', 'Experiments', 2);
 $selected_menu = 'Experiments';
-require_once 'inc/head.php';
+require_once 'app/head.inc.php';
 
 // add the chemdoodle stuff if we want it
 echo addChemdoodle();
@@ -28,7 +28,7 @@ echo addChemdoodle();
 try {
 
     if (!isset($_GET['mode']) || empty($_GET['mode']) || $_GET['mode'] === 'show') {
-        $ExperimentsView = new ExperimentsView(new Experiments($_SESSION['userid']));
+        $ExperimentsView = new ExperimentsView(new Experiments($_SESSION['team_id'], $_SESSION['userid']));
         $ExperimentsView->display = $_SESSION['prefs']['display'];
 
         // CATEGORY FILTER
@@ -76,18 +76,18 @@ try {
     // VIEW
     } elseif ($_GET['mode'] === 'view') {
 
-        $ExperimentsView = new ExperimentsView(new Experiments($_SESSION['userid'], $_GET['id']));
+        $ExperimentsView = new ExperimentsView(new Experiments($_SESSION['team_id'], $_SESSION['userid'], $_GET['id']));
         echo $ExperimentsView->view();
 
     // EDIT
     } elseif ($_GET['mode'] === 'edit') {
 
-        $ExperimentsView = new ExperimentsView(new Experiments($_SESSION['userid'], $_GET['id']));
+        $ExperimentsView = new ExperimentsView(new Experiments($_SESSION['team_id'], $_SESSION['userid'], $_GET['id']));
         echo $ExperimentsView->edit();
     }
 
 } catch (Exception $e) {
     display_message('ko', $e->getMessage());
 } finally {
-    require_once 'inc/footer.php';
+    require_once 'app/footer.inc.php';
 }

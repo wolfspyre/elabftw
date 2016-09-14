@@ -16,7 +16,7 @@ use Exception;
  * Login page
  *
  */
-require_once 'inc/common.php';
+require_once 'app/init.inc.php';
 $page_title = _('Login');
 $selected_menu = null;
 
@@ -26,7 +26,7 @@ if (isset($_SESSION['auth']) && $_SESSION['auth'] === 1) {
     exit;
 }
 
-require_once 'inc/head.php';
+require_once 'app/head.inc.php';
 
 $formKey = new FormKey();
 $BannedUsers = new BannedUsers();
@@ -65,7 +65,7 @@ try {
 
 } catch (Exception $e) {
     display_message('ko', $e->getMessage());
-    require_once 'inc/footer.php';
+    require_once 'app/footer.inc.php';
     exit;
 }
 ?>
@@ -81,39 +81,52 @@ function checkCookiesEnabled() {
 return (cookieEnabled);
 }
 if (!checkCookiesEnabled()) {
-    var cookie_alert = "<div class='errorbox messagebox<p><?= _('Please enable cookies in your navigator to continue.') ?></p></div>";
+    var cookie_alert =
+        "<div class='alert alert-danger'><p><?= _('Please enable cookies in your navigator to continue.') ?></p></div>";
     document.write(cookie_alert);
 }
 </script>
 
-<menu class='border' style='color:#29AEB9'><?= _('Note: you need cookies enabled to log in.') ?></menu>
+<menu class='border' style='color:#29AEB9'><?= _('Note: You need cookies enabled to log in.') ?></menu>
 <section class='center'>
     <!-- Login form , the id is for an acceptance test -->
     <form method="post" id='login' action="app/login-exec.php" autocomplete="off">
         <h2><?= _('Sign in to your account') ?></h2>
-        <p>
+        <br/>
+        <p class="login-area">
         <label class='block' for="email"><?= _('Email') ?></label>
-        <input id='email' name="email" type="email" value='<?php
-            // put the email in the field if we just registered
-            if (isset($_SESSION['email'])) {
-                echo $_SESSION['email'];
-            }
-            ?>' required /><br>
+        <input class="login-area-input" name="email" type="email" value='
+<?php
+// put the email in the field if we just registered
+if (isset($_SESSION['email'])) {
+    echo $_SESSION['email'];
+}
+?>
+            ' required /><br>
             <label class='block' for="password"><?= _('Password') ?></label>
-            <input id='password' name="password" type="password" required /><br>
+            <input class="login-area-input" name="password" type="password" required /><br>
             <!-- form key -->
             <?= $formKey->getFormkey() ?>
-        <br>
-        <label for='rememberme'><?= _('Remember me') ?></label>
         <input type='checkbox' name='rememberme' id='rememberme' />
+        <label for='rememberme'><?= _('Remember me') ?></label>
         </p>
         <div id='loginButtonDiv'>
         <button type="submit" class='button' name="Submit"><?= _('Login') ?></button>
         </div>
     </form>
-    <p><?php printf(_("Don't have an account? %sRegister%s now!<br>Lost your password? %sReset%s it!"), "<a href='register.php'>", "</a>", "<a href='#' class='trigger'>", "</a>"); ?></p>
+    <p>
+<?php
+printf(
+    _("Don't have an account? %sRegister%s now!<br>Lost your password? %sReset%s it!"),
+    "<a href='register.php'>",
+    "</a>",
+    "<a href='#' class='trigger'>",
+    "</a>"
+);
+?>
+    </p>
     <div class='toggle_container'>
-    <form name='resetPass' method='post' action='app/reset.php'>
+    <form name='resetPass' method='post' action='app/controllers/ResetPasswordController.php'>
     <input placeholder='<?= _('Enter your email address') ?>' name='email' type='email' required />
     <button class='button' type="submit" name="Submit"><?= _('Send new password') ?></button>
     </form>
@@ -131,4 +144,4 @@ $(document).ready(function(){
 });
 </script>
 
-<?php require_once 'inc/footer.php';
+<?php require_once 'app/footer.inc.php';

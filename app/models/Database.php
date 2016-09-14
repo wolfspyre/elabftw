@@ -21,8 +21,8 @@ class Database extends Entity
     /** pdo object */
     protected $pdo;
 
-    /** id of the team */
-    public $team;
+    /** inserted in sql */
+    public $bookableFilter = '';
 
     /**
      * Give me the team on init
@@ -46,9 +46,10 @@ class Database extends Entity
      * Create an item
      *
      * @param int $itemType What kind of item we want to create.
+     * @param int $userid
      * @return int the new id of the item
      */
-    public function create($itemType)
+    public function create($itemType, $userid)
     {
         $itemsTypes = new ItemsTypes($this->team);
 
@@ -61,7 +62,7 @@ class Database extends Entity
             'title' => _('Untitled'),
             'date' => Tools::kdate(),
             'body' => $itemsTypes->read($itemType),
-            'userid' => $_SESSION['userid'],
+            'userid' => $userid,
             'type' => $itemType
         ));
 
@@ -95,7 +96,7 @@ class Database extends Entity
         // permission check
         // you can only see items from your team
         if (!$this->isInTeam()) {
-            throw new Exception(_('This section is out of your reach.'));
+            throw new Exception(Tools::error(true));
         }
 
         $sql = "SELECT DISTINCT items.id AS itemid,
@@ -114,10 +115,6 @@ class Database extends Entity
         $req->bindParam(':id', $this->id, PDO::PARAM_INT);
         $req->execute();
 
-        if ($req->rowCount() === 0) {
-            throw new Exception('Nothing to show with this id.');
-        }
-
         return $req->fetch();
     }
 
@@ -129,11 +126,13 @@ class Database extends Entity
      */
     public function readAll()
     {
-        $sql = "SELECT DISTINCT items.id AS itemid, items.*, items_types.name, items_types.bgcolor
+        $sql = "SELECT DISTINCT items.id AS itemid, items.*, items_types.name, items_types.bgcolor, uploads.*
         FROM items
         LEFT JOIN items_types ON (items.type = items_types.id)
         LEFT JOIN items_tags ON (items.id = items_tags.item_id)
+        LEFT JOIN (SELECT uploads.item_id AS attachment, uploads.type FROM uploads) AS uploads ON (uploads.attachment = items.id AND uploads.type = 'items')
         WHERE items.team = :teamid
+        " . $this->bookableFilter . "
         " . $this->categoryFilter . "
         " . $this->tagFilter . "
         " . $this->queryFilter . "
@@ -160,7 +159,7 @@ class Database extends Entity
         // permission check
         // you can only see items from your team
         if (!$this->isInTeam()) {
-            throw new Exception(_('This section is out of your reach.'));
+            throw new Exception(Tools::error(true));
         }
         $title = Tools::checkTitle($title);
         $date = Tools::kdate($date);
@@ -180,9 +179,9 @@ class Database extends Entity
         $req->bindParam(':id', $this->id);
 
         // add a revision
-        $revisions = new Revisions('items', $this->id);
-        if (!$revisions->create($body, $userid)) {
-            throw new Exception(_('Error inserting revision.'));
+        $Revisions = new Revisions('items', $this->id, $userid);
+        if (!$Revisions->create($body)) {
+            throw new Exception(Tools::error());
         }
 
         return $req->execute();
@@ -197,7 +196,7 @@ class Database extends Entity
     public function updateRating($rating)
     {
         if (!$this->isInTeam()) {
-            throw new Exception(_('This section is out of your reach.'));
+            throw new Exception(Tools::error(true));
         }
 
         $sql = 'UPDATE items SET rating = :rating WHERE id = :id';
@@ -211,9 +210,10 @@ class Database extends Entity
     /**
      * Duplicate an item
      *
+     * @param int $userid
      * @return int $newId The id of the newly created item
      */
-    public function duplicate()
+    public function duplicate($userid)
     {
         $item = $this->read();
 
@@ -225,7 +225,7 @@ class Database extends Entity
             'title' => $item['title'],
             'date' => Tools::kdate(),
             'body' => $item['body'],
-            'userid' => $_SESSION['userid'],
+            'userid' => $userid,
             'type' => $item['type']
         ));
         $newId = $this->pdo->lastInsertId();
@@ -246,7 +246,7 @@ class Database extends Entity
     {
         // we can only delete items from our team
         if (!$this->isInTeam()) {
-            throw new Exception(_('This section is out of your reach.'));
+            throw new Exception(Tools::error(true));
         }
 
         // to store the outcome of sql
@@ -294,7 +294,7 @@ class Database extends Entity
     public function toggleLock()
     {
         if (!$this->isInTeam()) {
-            throw new Exception(_('This section is out of your reach.'));
+            throw new Exception(Tools::error(true));
         }
 
         // get what is the current state
