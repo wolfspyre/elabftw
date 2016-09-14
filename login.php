@@ -95,7 +95,7 @@ if (!checkCookiesEnabled()) {
         <br/>
         <p class="login-area">
         <label class='block' for="email"><?= _('Email') ?></label>
-        <input class="login-area-input" name="email" type="email" value='
+        <input class="login-area-input" name="email" type="email" id='email' value='
 <?php
 // put the email in the field if we just registered
 if (isset($_SESSION['email'])) {
@@ -104,7 +104,7 @@ if (isset($_SESSION['email'])) {
 ?>
             ' required /><br>
             <label class='block' for="password"><?= _('Password') ?></label>
-            <input class="login-area-input" name="password" type="password" required /><br>
+            <input class="login-area-input" name="password" type="password" id='password' required /><br>
             <!-- form key -->
             <?= $formKey->getFormkey() ?>
         <input type='checkbox' name='rememberme' id='rememberme' />
