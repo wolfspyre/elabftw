@@ -106,7 +106,7 @@ if (isset($_SESSION['email'])) {
         <label class='block' for="email"><?= _('Email') ?></label>
         <input class="login-area-input" name="email" type="email" value='<?= $email ?>' required /><br>
             <label class='block' for="password"><?= _('Password') ?></label>
-            <input class="login-area-input" name="password" type="password" required /><br>
+            <input class="login-area-input" name="password" type="password" id='password' required /><br>
             <!-- form key -->
             <?= $formKey->getFormkey() ?>
         <input type='checkbox' name='rememberme' id='rememberme' />
@@ -137,6 +137,8 @@ printf(
 
 <script>
 $(document).ready(function(){
+    $('#email').val('demo@elabftw.net');
+    $('#password').val('demodemo');
 	$(".toggle_container").hide();
 	$("a.trigger").click(function(){
 		$('.toggle_container').slideToggle("slow");
