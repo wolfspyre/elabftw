@@ -104,7 +104,7 @@ if (isset($_SESSION['email'])) {
         <br/>
         <p class="login-area">
         <label class='block' for="email"><?= _('Email') ?></label>
-        <input class="login-area-input" name="email" type="email" value='<?= $email ?>' required /><br>
+        <input class="login-area-input" name="email" id='email' type="email" value='<?= $email ?>' required /><br>
             <label class='block' for="password"><?= _('Password') ?></label>
             <input class="login-area-input" name="password" type="password" id='password' required /><br>
             <!-- form key -->
