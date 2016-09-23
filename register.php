@@ -28,7 +28,7 @@ if (isset($_SESSION['auth']) && $_SESSION['auth'] == 1) {
 // DEMO BLOCK
 $message ="Thank you for trying eLabFTW. This is a demo. This is not a webservice: you need <a style='color:blue;' href='https://github.com/elabftw/elabftw/#readme'>to install it</a> on a server or your computer.";
 display_message('ok', $message);
-require_once 'inc/footer.php';
+require_once 'app/footer.inc.php';
 die();
 // END DEMO BLOCK
 ?>
