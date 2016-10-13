@@ -20,16 +20,17 @@ use Exception;
 require_once 'app/init.inc.php';
 
 try {
-    if ($_SESSION['is_sysadmin'] != 1) {
-        throw new Exception(_('This section is out of your reach.'));
-    }
-
     $page_title = _('eLabFTW Configuration');
     $selected_menu = null;
     require_once 'app/head.inc.php';
 
+    if ($_SESSION['is_sysadmin'] != 1) {
+        throw new Exception(_('This section is out of your reach.'));
+    }
+
     $formKey = new FormKey();
     $SysconfigView = new SysconfigView(new Update(new Config()), new Logs(), new TeamsView(new Teams()));
+    $UsersView = new UsersView(new Users());
 
     try {
         // we put another try here because an exception here would end the page
@@ -66,11 +67,12 @@ try {
     <menu>
         <ul>
             <li class='tabhandle' id='tab1'><?= _('Teams') ?></li>
-            <li class='tabhandle' id='tab2'><?= _('Server') ?></li>
-            <li class='tabhandle' id='tab3'><?= _('Timestamp') ?></li>
-            <li class='tabhandle' id='tab4'><?= _('Security') ?></li>
-            <li class='tabhandle' id='tab5'><?= _('Email') ?></li>
-            <li class='tabhandle' id='tab6'><?= _('Logs') ?></li>
+            <li class='tabhandle' id='tab2'><?= _('Users') ?></li>
+            <li class='tabhandle' id='tab3'><?= _('Server') ?></li>
+            <li class='tabhandle' id='tab4'><?= _('Timestamp') ?></li>
+            <li class='tabhandle' id='tab5'><?= _('Security') ?></li>
+            <li class='tabhandle' id='tab6'><?= _('Email') ?></li>
+            <li class='tabhandle' id='tab7'><?= _('Logs') ?></li>
         </ul>
     </menu>
 
@@ -91,8 +93,13 @@ try {
         </div>
     </div>
 
-    <!-- TAB 2 -->
+    <!-- TAB 2 USERS -->
     <div class='divhandle' id='tab2div'>
+        <?= $UsersView->showEditUsers() ?>
+    </div>
+
+    <!-- TAB 3 SERVER -->
+    <div class='divhandle' id='tab3div'>
         <form class='box' method='post' action='app/controllers/SysconfigController.php'>
             <h3><?= _('Under the Hood') ?></h3>
             <hr>
@@ -134,8 +141,8 @@ try {
         </div>
     </div>
 
-    <!-- TAB 3 TIMESTAMP -->
-    <div class='divhandle' id='tab3div'>
+    <!-- TAB 4 TIMESTAMP -->
+    <div class='divhandle' id='tab4div'>
         <form class='box' method='post' action='app/controllers/SysconfigController.php'>
             <h3><?php echo _('Timestamping Configuration'); ?></h3>
             <hr>
@@ -176,8 +183,8 @@ try {
         </form>
     </div>
 
-    <!-- TAB 4 SECURITY -->
-    <div class='divhandle' id='tab4div'>
+    <!-- TAB 5 SECURITY -->
+    <div class='divhandle' id='tab5div'>
         <div class='box'>
             <h3><?= _('Security Settings') ?></h3>
             <hr>
@@ -209,8 +216,8 @@ try {
         </div>
     </div>
 
-    <!-- TAB 5 -->
-    <div class='divhandle' id='tab5div'>
+    <!-- TAB 6 -->
+    <div class='divhandle' id='tab6div'>
         <div class='box'>
             <h3><?= _('E-mail Settings') ?></h3>
             <hr>
@@ -307,8 +314,8 @@ try {
 
     </div>
 
-    <!-- TAB 6 LOGS -->
-    <div class='divhandle' id='tab6div'>
+    <!-- TAB 7 LOGS -->
+    <div class='divhandle' id='tab7div'>
         <?= $SysconfigView->logsShow() ?>
     </div>
 

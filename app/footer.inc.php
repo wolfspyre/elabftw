@@ -26,7 +26,7 @@
 
     <p class='footer_left'>
     <a class='elab-tooltip-top' href='https://twitter.com/elabftw'>
-        <span>Follow eLabFTW on Twitter !</span>
+        <span>Follow eLabFTW on Twitter!</span>
     <img src='img/twitter.png' alt='twitter' />
     </a>
      <a class='elab-tooltip-top' href='https://github.com/elabftw/elabftw'>
@@ -45,7 +45,7 @@ if (isset($_SESSION['auth']) && $_SESSION['is_sysadmin']) {
 if (isset($_SESSION['auth']) && $_SESSION['is_admin']) {
     echo "<a href='admin.php'>" . _('Admin panel');
     $Users = new \Elabftw\Elabftw\Users();
-    $unvalidated = count($Users->readAll(0));
+    $unvalidated = count($Users->readAllFromTeam($_SESSION['team_id'], 0));
     if ($unvalidated > 0) {
         echo " <span class='badge'>" . $unvalidated . "</span>";
     }

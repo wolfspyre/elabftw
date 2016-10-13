@@ -32,7 +32,7 @@
   
     <link rel="top" title="elabftw 1.3.0 documentation" href="index.html"/>
         <link rel="next" title="Thanks" href="thanks.html"/>
-        <link rel="prev" title="Contributing" href="contributing.html"/> 
+        <link rel="prev" title="About Docker" href="docker-doc.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -81,35 +81,38 @@
           
             
             
-                <p class="caption"><span class="caption-text">Installing</span></p>
+                <p class="caption"><span class="caption-text">Installation</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="install-gnulinux.html">Install on GNU/Linux</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Install on a GNU/Linux server</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install-drop.html">Install in the cloud</a></li>
-<li class="toctree-l1"><a class="reference internal" href="install-docker.html">Install in a Docker container</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install-mac.html">Install on Mac OS X</a></li>
-<li class="toctree-l1"><a class="reference internal" href="install-windows.html">Install on Windows (in Docker)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="common-errors.html">Common errors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install-windows.html">Install on Windows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install-oldschool.html">Install without Docker</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Usage</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="postinstall.html">Post install</a></li>
+<li class="toctree-l1"><a class="reference internal" href="manual.html">Manual</a></li>
 <li class="toctree-l1"><a class="reference internal" href="backup.html">How to backup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="how-to-update.html">How to update</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Documentation</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently asked questions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="features.html">Features</a></li>
-<li class="toctree-l1"><a class="reference internal" href="manual.html">Manual</a></li>
-<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docker-doc.html">About Docker</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="">Upgrade a normal install to a Docker install</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#description">Description</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#preparation">Preparation</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#install-docker">Install Docker</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#install-docker-compose">Install Docker-compose</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#install-elabftw-normally">Install elabftw normally</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#export-current-install">Export current install</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#get-the-config-file">Get the config file</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#fill-the-config-file">Fill the config file</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#editing-the-config-file">Editing the config file</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#copy-the-uploaded-files">Copy the uploaded files</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#about-https-ssl-tls">About HTTPS (SSL/TLS)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#starting-the-containers">Starting the containers</a></li>
 </ul>
@@ -117,7 +120,7 @@
 </ul>
 </li>
 </ul>
-<p class="caption"><span class="caption-text">Misc</span></p>
+<p class="caption"><span class="caption-text">Miscellaneous</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="thanks.html">Thanks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
@@ -172,7 +175,7 @@
 <div class="section" id="description">
 <h2>Description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h2>
 <p>This guide is aimed at (GNU/Linux) users who have installed eLabFTW the old school way (git clone or zip archive) and want to benefit from Docker.
-If you are not familiar with Docker, take the time to read the documentation on the Docker website. And read also the <a class="reference internal" href="install-docker.html#docker-doc"><span>in-depth documentation for eLabFTW with Docker</span></a>.</p>
+If you are not familiar with Docker, take the time to read the documentation on the Docker website. And read also the <a class="reference internal" href="docker-doc.html#docker-doc"><span>in-depth documentation for eLabFTW with Docker</span></a>.</p>
 </div>
 <div class="section" id="preparation">
 <h2>Preparation<a class="headerlink" href="#preparation" title="Permalink to this headline">¶</a></h2>
@@ -185,9 +188,9 @@ If you are not familiar with Docker, take the time to read the documentation on 
 </div>
 <p>If everything works, you should see a little message explaining what Docker did to print this message.</p>
 </div>
-<div class="section" id="install-docker-compose">
-<h3>Install Docker-compose<a class="headerlink" href="#install-docker-compose" title="Permalink to this headline">¶</a></h3>
-<p>We need <cite>docker-compose</cite> to orchestrate our containers. <a class="reference external" href="https://docs.docker.com/compose/install/">Install docker-compose</a>.</p>
+<div class="section" id="install-elabftw-normally">
+<h3>Install elabftw normally<a class="headerlink" href="#install-elabftw-normally" title="Permalink to this headline">¶</a></h3>
+<p>Follow the steps described <a class="reference internal" href="install.html#install"><span>here</span></a>, except the last one. Do not start the containers.</p>
 </div>
 <div class="section" id="export-current-install">
 <h3>Export current install<a class="headerlink" href="#export-current-install" title="Permalink to this headline">¶</a></h3>
@@ -197,30 +200,20 @@ If you are not familiar with Docker, take the time to read the documentation on 
 </div>
 <div class="section" id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="get-the-config-file">
-<h3>Get the config file<a class="headerlink" href="#get-the-config-file" title="Permalink to this headline">¶</a></h3>
-<p>The <cite>docker-compose.yml</cite> file is our only configuration file for Docker. Get it:</p>
-<div class="highlight-bash"><div class="highlight"><pre>wget https://raw.githubusercontent.com/elabftw/docker-elabftw/master/src/docker-compose.yml-EXAMPLE -O docker-compose.yml
-</pre></div>
-</div>
-<p>Edit it with your favorite text editor:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$EDITOR</span> docker-compose.yml
-</pre></div>
-</div>
-</div>
-<div class="section" id="fill-the-config-file">
-<h3>Fill the config file<a class="headerlink" href="#fill-the-config-file" title="Permalink to this headline">¶</a></h3>
+<p>You now have a configuration file <cite>/etc/elabftw.yml</cite>. Edit it with your favorite editor.</p>
+<div class="section" id="editing-the-config-file">
+<h3>Editing the config file<a class="headerlink" href="#editing-the-config-file" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>Change the value of DB_PASSWORD to a new generated long password. You can get one <a class="reference external" href="https://www.grc.com/passwords.htm">here</a></li>
 <li>Open the <cite>config.php</cite> file located in your <cite>elabftw</cite> folder of the current install</li>
 <li>Copy the SECRET_KEY value from the <cite>config.php</cite> file to the <cite>docker-compose.yml</cite> file</li>
-<li>Change the SERVER_NAME to the name of your server (elabftw.example.edu or the IP address)</li>
-<li>Port: change &#8220;443:443&#8221; to &#8220;8080:443&#8221; or &#8220;444:443&#8221; or &#8220;9000:443&#8221; because Apache is already using port 443.</li>
-<li>Volumes: copy the <cite>uploads</cite> folder to <cite>/dok/</cite> or wherever you want it</li>
-<li>Change the MYSQL_ROOT_PASSWORD to something complicated</li>
-<li>Change the MYSQL_PASSWORD to the same value as DB_PASSWORD</li>
-<li>You can optionally edit where the MySQL database will be stored persistently</li>
+<li>Port: change &#8220;443:443&#8221; to &#8220;8080:443&#8221; or &#8220;444:443&#8221; or &#8220;9000:443&#8221; because your current server is already using port 443</li>
 <li>If you are running MySQL&nbsp;5.5 or 5.6, edit the 5.7 in the <cite>image: mysql:5.7</cite> line to the appropriate version. You can upgrade later.</li>
+</ul>
+</div>
+<div class="section" id="copy-the-uploaded-files">
+<h3>Copy the uploaded files<a class="headerlink" href="#copy-the-uploaded-files" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Copy your <cite>uploads</cite> folder to <cite>/var/elabftw/web</cite></li>
 </ul>
 </div>
 <div class="section" id="about-https-ssl-tls">
@@ -229,7 +222,7 @@ If you are not familiar with Docker, take the time to read the documentation on 
 <p>One solution to this is to request a certificate from <a class="reference external" href="https://letsencrypt.org">Let&#8217;s Encrypt</a>. It&#8217;s free and you get a real proper certificate. See the documentation on Let&#8217;s Encrypt website on how to request a certificate for your website. You will need to have a domain name (it doesn&#8217;t work if you just have an IP address or if the server is not accessible from outside a company&#8217;s network) pointing to the server.</p>
 <p>Another solution is to use the certificate you already have.</p>
 <ul class="simple">
-<li>Change the value of ENABLE_LETSENCRYPT to true.</li>
+<li>Change the value of ENABLE_LETSENCRYPT to true in <cite>/etc/elabftw.yml</cite></li>
 <li>Uncomment the line <cite>#- /etc/letsencrypt:/ssl</cite> (remove the leading #)</li>
 <li>If your domain is <cite>elabftw.example.com</cite>, do this:</li>
 </ul>
@@ -243,11 +236,10 @@ cp /path/to/your/current-key.pem /etc/letsencrypt/live/elabftw.example.com/privk
 </div>
 <div class="section" id="starting-the-containers">
 <h3>Starting the containers<a class="headerlink" href="#starting-the-containers" title="Permalink to this headline">¶</a></h3>
-<p>We now have a complete <cite>docker-compose.yml</cite> config file and we can start <cite>elabftw</cite> with this command:</p>
-<div class="highlight-bash"><div class="highlight"><pre>docker-compose up -d
+<div class="highlight-bash"><div class="highlight"><pre>elabctl start
 </pre></div>
 </div>
-<p>This will create an empty database in <cite>/dok/mysql</cite> or wherever you chose to have it. But of course, what we want is to have our old database in there! To do that we will copy our <cite>dump.sql</cite> file to the <cite>mysql</cite> container and import it in place of the freshly created database (which is empty!).</p>
+<p>This will create an empty database in <cite>/var/elabftw/mysql</cite>. But of course, what we want is to have our old database in there! To do that we will copy our <cite>dump.sql</cite> file to the <cite>mysql</cite> container and import it in place of the freshly created database (which is empty!).</p>
 <div class="highlight-bash"><div class="highlight"><pre>docker cp dump.sql mysql:/
 docker <span class="nb">exec</span> -it mysql bash
 mysql -uroot -p
@@ -276,7 +268,7 @@ Mysql&gt; <span class="nb">exit</span><span class="p">;</span>
         <a href="thanks.html" class="btn btn-neutral float-right" title="Thanks" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="contributing.html" class="btn btn-neutral" title="Contributing" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="docker-doc.html" class="btn btn-neutral" title="About Docker" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

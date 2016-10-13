@@ -15,11 +15,8 @@ Everything will be configured properly and automagically.
 
 If you don't have a (sub)domain already, you can get one from `OVH <https://www.ovh.com>`_, `Gandi <https://www.gandi.net>`_, `1&1 <https://www.1and1.com>`_ or any other domain name registrar. You can get one for half a dollar per year.
 
-
-Create your drop
-----------------
-
-.. warning:: This script will work for a fresh drop. If you already have a server running, you should consider a :ref:`normal install <install-gnulinux>` instead.
+Create your droplet
+-------------------
 
 * Create an account on `DigitalOcean <https://m.do.co/c/c2ce8f861e0e>`_
 
@@ -37,7 +34,7 @@ Create your drop
 
 * Optional: add your SSH key (`documentation <https://www.digitalocean.com/community/tutorials/how-to-use-ssh-keys-with-digitalocean-droplets>`_)
 
-* Create the drop (it takes a minute)
+* Create the droplet (it takes a minute)
 
 * Copy the IP address
 
@@ -45,36 +42,13 @@ Create your drop
 
 .. note:: Without a domain pointing to the drop, you will have a self signed certificate (so users will have a warning), whereas if you have a domain name, you will get a proper SSL certificate from Let's Encrypt.
 
-
-Install everything
-------------------
+Install eLabFTW
+---------------
 
 * Open a terminal and connect to your new server:
 
 .. code-block:: bash
 
-    ssh root@12.34.56.78
+    ssh root@<DROPLET_IP_ADDRESS>
 
-* Use a terminal multiplexer:
-
-.. code-block:: bash
-
-    tmux
-
-* Install `elabctl`:
-
-.. code-block:: bash
-
-    wget -qO- https://get.elabftw.net > /usr/bin/elabctl && chmod +x /usr/bin/elabctl
-
-* Install and start elabftw in Docker:
-
-.. code-block:: bash
-
-    elabctl install
-
-* Use `elabctl` without arguments to see what you can do with it.
-
-* Don't forget to read :ref:`the post install page <postinstall>`, setup :ref:`backup <backup>`, and subscribe to `the newsletter <http://elabftw.us12.list-manage1.com/subscribe?u=61950c0fcc7a849dbb4ef1b89&id=04086ba197>`_!
-
-ENJOY! :D
+* Follow the :ref:`steps for a normal install <normal-install>`.

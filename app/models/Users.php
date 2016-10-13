@@ -264,15 +264,33 @@ class Users extends Auth
     /**
      * Read all users from the team
      *
-     * @param int validated
+     * @param int $team
+     * @param int $validated
      * @return array
      */
-    public function readAll($validated = 1)
+    public function readAllFromTeam($team, $validated = 1)
     {
         $sql = "SELECT * FROM users WHERE validated = :validated AND team = :team";
         $req = $this->pdo->prepare($sql);
         $req->bindValue(':validated', $validated);
-        $req->bindValue(':team', $_SESSION['team_id']);
+        $req->bindValue(':team', $team);
+        $req->execute();
+
+        return $req->fetchAll();
+    }
+
+    /**
+     * Get all users
+     *
+     * @return array
+     */
+    public function readAll()
+    {
+        $sql = "SELECT users.*, teams.team_name AS teamname
+            FROM users
+            LEFT JOIN teams ON (users.team = teams.team_id)
+            ORDER BY users.team ASC, users.usergroup ASC, users.lastname ASC";
+        $req = $this->pdo->prepare($sql);
         $req->execute();
 
         return $req->fetchAll();
