@@ -9,7 +9,7 @@ Version 1.3.0
 * New features:
 
   * add a scheduler to allow booking (bookable) items from the database, on Team page (#238). Head to the admin panel to create a bookable type of item. You can then book it from the Team page.
-  * add possbility to show experiments from others from the team. Go to the User Control Panel to set the option.
+  * add possibility to show experiments from others from the team. Go to the User Control Panel to set the option.
   * add possibility to send a mass email to all registered users from Sysconfig panel (#271)
   * Chemdoodle: when clicking the Save button on an experiment, the .mol file is automatically uploaded (#174)
   * Sysadmin can now edit users from the Sysadmin panel (#297)
@@ -37,8 +37,19 @@ Version 1.3.0
 
 * Internationalization:
 
-  * updated terms
-  * French is now 100% translated
+  * Catalan is 71% translated
+  * Chinese is 68% translated
+  * French is 100% translated
+  * German is 98% translated
+  * Italian is 83% translated
+  * Polish is 25% translated
+  * Portuguese is 64% translated
+  * Portuguese (Brazilian) is 79% translated
+  * Russian is 23% translated
+  * Slovenian is 91% translated
+  * Spanish is 100% translated
+
+  Check the contributing page to help translate.
 
 * Documentation:
 
