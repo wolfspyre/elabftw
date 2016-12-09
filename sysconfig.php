@@ -4,7 +4,7 @@
  *
  * @author Nicolas CARPi <nicolas.carpi@curie.fr>
  * @copyright 2012 Nicolas CARPi
- * @see http://www.elabftw.net Official website
+ * @see https://www.elabftw.net Official website
  * @license AGPL-3.0
  * @package elabftw
  */
@@ -40,26 +40,29 @@ try {
         display_message('ko_nocross', $e->getMessage());
     }
 
+    // display current and latest version
+    echo "<p>" . _('Installed version:') . " " . $SysconfigView->Update->getInstalledVersion() . " ";
     if ($SysconfigView->Update->success === true) {
-        // display current and latest version
-        echo "<br><p>" . _('Installed version:') . " " . $SysconfigView->Update->getInstalledVersion() . " ";
         // show a little green check if we have latest version
         if (!$SysconfigView->Update->updateIsAvailable()) {
-            echo "<img src='img/check.png' width='16px' length='16px' title='latest' style='position:relative;bottom:2px' alt='OK' />";
+            echo "<img src='app/img/check.png' width='16px' length='16px' title='latest' style='position:relative;bottom:2px' alt='OK' />";
         }
         // display latest version
         echo "<br>" . _('Latest version:') . " " . $SysconfigView->Update->getLatestVersion() . "</p>";
 
-        // if we don't have the latest version, show button redirecting to wiki
+        // if we don't have the latest version, show button redirecting to doc
         if ($SysconfigView->Update->updateIsAvailable()) {
-            $message = _('A new version is available!') . " <a href='doc/_build/html/how-to-update.html'>
+            $message = $SysconfigView->Update->getReleaseDate() . " - " .
+                _('A new version is available!') . " <a href='https://elabftw.readthedocs.io/en/stable/how-to-update.html'>
                 <button class='button'>Update elabftw</button></a>";
             display_message('warning', $message);
         }
+    } else {
+        echo "</p>";
     }
 
     if (get_config('mail_from') === 'notconfigured@example.com') {
-        $message = sprintf(_('Please finalize install : %slink to documentation%s.'), "<a href='doc/_build/html/postinstall.html#setting-up-email'>", "</a>");
+        $message = sprintf(_('Please finalize install : %slink to documentation%s.'), "<a href='https://elabftw.readthedocs.io/en/stable/postinstall.html#setting-up-email'>", "</a>");
         display_message('ko', $message);
     }
     ?>
@@ -164,7 +167,7 @@ try {
             </p>
             <p>
             <label class="block" for='stampcert'><?= _('Chain of certificates of the external timestamping service:'); ?></label>
-            <input class="clean-form col-3-form" type='text' placeholder='vendor/pki.dfn.pem' value='<?= get_config('stampcert') ?>' name='stampcert' id='stampcert' />
+            <input class="clean-form col-3-form" type='text' placeholder='app/dfn-cert/pki.dfn.pem' value='<?= get_config('stampcert') ?>' name='stampcert' id='stampcert' />
             <span class='smallgray'><?php printf(_('This should point to the chain of certificates used by your external timestamping provider to sign the timestamps.%sLocal path relative to eLabFTW installation directory. The file needs to be in %sPEM-encoded (ASCII)%s format!'), "<br>", "<a href='https://en.wikipedia.org/wiki/Privacy-enhanced_Electronic_Mail'>", "</a>"); ?></span>
             </p>
             <label class="block" for='stamplogin'><?= _('Login for external timestamping service:') ?></label>

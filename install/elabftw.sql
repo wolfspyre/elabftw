@@ -377,7 +377,7 @@ INSERT INTO `experiments_templates` (`team`, `body`, `name`, `userid`) VALUES
 <p><span style=\"font-size: 14pt;\"><strong>Results :</strong></span></p><p>&nbsp;</p>', 'default', 0);
 /* the default team */
 INSERT INTO `teams` (`team_id`, `team_name`, `deletable_xp`, `link_name`, `link_href`) VALUES
-(1, 'Editme', 1, 'Documentation', 'doc/_build/html/index.html');
+(1, 'Editme', 1, 'Documentation', 'https://elabftw.readthedocs.io');
 /* the groups */
 INSERT INTO `groups` (`group_id`, `group_name`, `is_sysadmin`, `is_admin`, `can_lock`) VALUES
 (1, 'Sysadmins', 1, 1, 0),
@@ -404,6 +404,6 @@ INSERT INTO `config` (`conf_name`, `conf_value`) VALUES
 ('stamppass', ''),
 ('stampshare', '1'),
 ('stampprovider', 'http://zeitstempel.dfn.de/'),
-('stampcert', 'vendor/pki.dfn.pem'),
+('stampcert', 'app/dfn-cert/pki.dfn.pem'),
 ('stamphash', 'sha256'),
-('schema', '11');
+('schema', '12');

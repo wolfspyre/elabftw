@@ -4,7 +4,7 @@
  *
  * @author Nicolas CARPi <nicolas.carpi@curie.fr>
  * @copyright 2012 Nicolas CARPi
- * @see http://www.elabftw.net Official website
+ * @see https://www.elabftw.net Official website
  * @license AGPL-3.0
  */
 namespace Elabftw\Elabftw;
@@ -56,7 +56,14 @@ require_once ELAB_ROOT . 'app/functions.inc.php';
 if (isset($_SESSION['prefs']['lang'])) {
     $locale = $_SESSION['prefs']['lang'] . '.utf8';
 } else {
-    $locale = get_config('lang') . '.utf8';
+    // this will throw an exception if the SQL structure is not imported yet
+    // so we redirect to the install folder
+    try {
+        $locale = get_config('lang') . '.utf8';
+    } catch (Exception $e) {
+        header('Location: install');
+        exit;
+    }
 }
 $domain = 'messages';
 putenv("LC_ALL=$locale");

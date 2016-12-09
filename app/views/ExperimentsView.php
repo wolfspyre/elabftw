@@ -4,7 +4,7 @@
  *
  * @author Nicolas CARPi <nicolas.carpi@curie.fr>
  * @copyright 2012 Nicolas CARPi
- * @see http://www.elabftw.net Official website
+ * @see https://www.elabftw.net Official website
  * @license AGPL-3.0
  * @package elabftw
  */
@@ -195,7 +195,7 @@ class ExperimentsView extends EntityView
 
         // show attached if there is a file attached
         if (isset($item['attachment'])) {
-            $html .= "<img style='clear:both' class='align_right' src='img/attached.png' alt='file attached' />";
+            $html .= "<img style='clear:both' class='align_right' src='app/img/attached.png' alt='file attached' />";
         }
         // we show the abstract of the experiment on mouse hover with the title attribute
         // we check if it is our experiment. It would be best to check if we have visibility rights on it
@@ -208,18 +208,18 @@ class ExperimentsView extends EntityView
         $html .= "<a title='" . $bodyAbstract . "' href='experiments.php?mode=view&id=" . $item['id'] . "'>";
         $html .= "<p class='title'>";
         if ($item['timestamped']) {
-            $html .= "<img class='align_right' src='img/stamp.png' alt='stamp' title='experiment timestamped' />";
+            $html .= "<img class='align_right' src='app/img/stamp.png' alt='stamp' title='experiment timestamped' />";
         }
         // LOCK
         if ($item['locked']) {
-            $html .= "<img style='padding-bottom:3px;' src='img/lock-blue.png' alt='lock' />";
+            $html .= "<img style='padding-bottom:3px;' src='app/img/lock-blue.png' alt='lock' />";
         }
         // TITLE
         $html .= $item['title'] . "</p></a>";
         // STATUS
         $html .= "<span style='text-transform:uppercase;font-size:80%;padding-left:20px;color:#" . $item['color'] . "'>" . $item['name'] . " </span>";
         // DATE
-        $html .= "<span class='date'><img class='image' src='img/calendar.png' /> " . Tools::formatDate($item['date']) . "</span> ";
+        $html .= "<span class='date'><img class='image' src='app/img/calendar.png' /> " . Tools::formatDate($item['date']) . "</span> ";
         // TAGS
         $html .= $this->showTags('experiments', 'view', $item['id']);
 
@@ -240,7 +240,7 @@ class ExperimentsView extends EntityView
         $html .= $this->backToLink('experiments');
 
         $html .= "<section class='box' id='main_section' style='border-left: 6px solid #" . $this->experiment['color'] . "'>";
-        $html .= "<img class='align_right' src='img/big-trash.png' title='delete' alt='delete' onClick=\"experimentsDestroy(" . $this->Experiments->id . ", '" . _('Delete this?') . "')\" />";
+        $html .= "<img class='align_right' src='app/img/big-trash.png' title='delete' alt='delete' onClick=\"experimentsDestroy(" . $this->Experiments->id . ", '" . _('Delete this?') . "')\" />";
 
         // tags
         $html .= $this->showTags('experiments', 'edit', $this->Experiments->id);
@@ -252,7 +252,7 @@ class ExperimentsView extends EntityView
 
         // DATE
         $html .= "<div class='row'><div class='col-md-4'>";
-        $html .= "<img src='img/calendar.png' title='date' alt='calendar' />";
+        $html .= "<img src='app/img/calendar.png' title='date' alt='calendar' />";
         $html .= "<label for='datepicker'>" . _('Date') . "</label>";
         // if firefox has support for it: type = date
         // https://bugzilla.mozilla.org/show_bug.cgi?id=825294
@@ -261,7 +261,7 @@ class ExperimentsView extends EntityView
 
         // VISIBILITY
         $html .= "<div class='col-md-4'>";
-        $html .= "<img src='img/eye.png' alt='visibility' />";
+        $html .= "<img src='app/img/eye.png' alt='visibility' />";
         $html .= "<label for='visibility_select'>" . _('Visibility') . "</label>";
         $html .= " <select id='visibility_select' onchange='updateVisibility(" . $this->Experiments->id . ", this.value)'>";
         $html .= "<option value='organization' ";
@@ -293,7 +293,7 @@ class ExperimentsView extends EntityView
 
         // STATUS
         $html .= "<div class='col-md-4'>";
-        $html .= "<img src='img/status.png' alt='status' />";
+        $html .= "<img src='app/img/status.png' alt='status' />";
         $html .= "<label for='status_select'>" . ngettext('Status', 'Status', 1) . "</label>";
         $html .= " <select id='status_select' name='status' onchange='updateStatus(" . $this->Experiments->id . ", this.value)'>";
 
@@ -328,7 +328,7 @@ class ExperimentsView extends EntityView
 
         // LINKS
         $html .= "<section>
-                <img src='img/link.png' alt='link' /> <h4 style='display:inline'>" . _('Linked items') . "</h4><br>";
+                <img src='app/img/link.png' alt='link' /> <h4 style='display:inline'>" . _('Linked items') . "</h4><br>";
         $html .= "<span id='links_div'>";
         $html .= $this->showLinks($this->Experiments->id, 'edit');
         $html .= "</span>";
@@ -369,7 +369,7 @@ class ExperimentsView extends EntityView
     }
 
     /**
-     * Check if we have writing rights
+     * Check if we experiment is read only
      *
      * @return bool
      */
@@ -378,7 +378,7 @@ class ExperimentsView extends EntityView
         // Check id is owned by connected user to show read only message if not
         if ($this->experiment['userid'] != $_SESSION['userid']) {
             // Can the user see this experiment which is not his ?
-            if ($this->experiment['visibility'] === 'user') {
+            if ($this->experiment['visibility'] === 'user' && !$_SESSION['is_admin']) {
 
                 throw new Exception(Tools::error(true));
 
@@ -430,7 +430,7 @@ class ExperimentsView extends EntityView
         return display_message(
             'ok_nocross',
             _('Experiment was timestamped by') . " " . $timestamper['firstname'] . " " . $timestamper['lastname'] . " " . _('on') . " " . $date->format('Y-m-d') . " " . _('at') . " " . $date->format('H:i:s') . " "
-            . $date->getTimezone()->getName() . " <a href='uploads/" . $pdf[0]['long_name'] . "'><img src='img/pdf.png' title='" . _('Download timestamped pdf') . "' alt='pdf' /></a> <a href='uploads/" . $token[0]['long_name'] . "'><img src='img/download.png' title=\"" . _('Download token') . "\" alt='token' /></a>"
+            . $date->getTimezone()->getName() . " <a href='uploads/" . $pdf[0]['long_name'] . "'><img src='app/img/pdf.png' title='" . _('Download timestamped pdf') . "' alt='pdf' /></a> <a href='uploads/" . $token[0]['long_name'] . "'><img src='app/img/download.png' title=\"" . _('Download token') . "\" alt='token' /></a>"
         );
     }
 
@@ -452,14 +452,14 @@ class ExperimentsView extends EntityView
         }
 
         $html .= "<section class='item' style='padding:15px;border-left: 6px solid #" . $this->experiment['color'] . "'>";
-        $html .= "<span class='top_right_status'><img src='img/status.png'>" . $this->experiment['name'] .
-            "<img src='img/eye.png' alt='eye' />" . $this->getVisibility() . "</span>";
-        $html .= "<div><img src='img/calendar.png' title='date' alt='Date :' /> " .
+        $html .= "<span class='top_right_status'><img src='app/img/status.png'>" . $this->experiment['name'] .
+            "<img src='app/img/eye.png' alt='eye' />" . $this->getVisibility() . "</span>";
+        $html .= "<div><img src='app/img/calendar.png' title='date' alt='Date :' /> " .
             Tools::formatDate($this->experiment['date']) . "</div>
-        <a class='elab-tooltip' href='experiments.php?mode=edit&id=" . $this->experiment['id'] . "'><span>Edit</span><img src='img/pen-blue.png' alt='Edit' /></a>
-    <a class='elab-tooltip' href='app/controllers/ExperimentsController.php?duplicateId=" . $this->experiment['id'] . "'><span>Duplicate Experiment</span><img src='img/duplicate.png' alt='Duplicate' /></a>
-    <a class='elab-tooltip' href='make.php?what=pdf&id=" . $this->experiment['id'] . "&type=experiments'><span>Make a PDF</span><img src='img/pdf.png' alt='PDF' /></a>
-    <a class='elab-tooltip' href='make.php?what=zip&id=" . $this->experiment['id'] . "&type=experiments'><span>Make a ZIP</span><img src='img/zip.png' alt='ZIP' /></a> ";
+        <a class='elab-tooltip' href='experiments.php?mode=edit&id=" . $this->experiment['id'] . "'><span>Edit</span><img src='app/img/pen-blue.png' alt='Edit' /></a>
+    <a class='elab-tooltip' href='app/controllers/ExperimentsController.php?duplicateId=" . $this->experiment['id'] . "'><span>Duplicate Experiment</span><img src='app/img/duplicate.png' alt='Duplicate' /></a>
+    <a class='elab-tooltip' href='make.php?what=pdf&id=" . $this->experiment['id'] . "&type=experiments'><span>Make a PDF</span><img src='app/img/pdf.png' alt='PDF' /></a>
+    <a class='elab-tooltip' href='make.php?what=zip&id=" . $this->experiment['id'] . "&type=experiments'><span>Make a ZIP</span><img src='app/img/zip.png' alt='ZIP' /></a> ";
 
         // lock
         $onClick = " onClick=\"toggleLock('experiments', " . $this->experiment['id'] . ")\"";
@@ -472,12 +472,12 @@ class ExperimentsView extends EntityView
                 $onClick = '';
             }
         }
-        $html .= "<a class='elab-tooltip' href='#'><span>" . $alt . "</span><img id='lock'" . $onClick . " src='img/" . $imgSrc . "' alt='" . $alt . "' /></a> ";
+        $html .= "<a class='elab-tooltip' href='#'><span>" . $alt . "</span><img id='lock'" . $onClick . " src='app/img/" . $imgSrc . "' alt='" . $alt . "' /></a> ";
         // show timestamp button if not timestamped already
         if (!$this->experiment['timestamped']) {
             //$onClick = " onClick=\"timestamp(" . $this->experiment['id'] . ")\"";
 
-            $html .= "<a class='elab-tooltip'><span>Timestamp Experiment</span><img onClick='confirmTimestamp()' src='img/stamp.png' alt='Timestamp' /></a>";
+            $html .= "<a class='elab-tooltip'><span>Timestamp Experiment</span><img onClick='confirmTimestamp()' src='app/img/stamp.png' alt='Timestamp' /></a>";
             $html .= "<div id='confirm-timestamp' title='" . _('Timestamp this experiment?') . "'>";
             $html .= "<p><span class='ui-icon ui-icon-alert' style='float:left; margin:12px 12px 20px 0;'></span>";
             $html .= _('Once timestamped an experiment cannot be edited anymore! Are you sure you want to do this?');
@@ -524,6 +524,14 @@ class ExperimentsView extends EntityView
         $html = "<script>
         // READY ? GO !!
         $(document).ready(function() {
+            // AUTOSAVE
+            var typingTimer;                // timer identifier
+            var doneTypingInterval = 7000;  // time in ms between end of typing and save
+
+            // user finished typing, save work
+            function doneTyping () {
+                quickSave('experiments', " . $this->Experiments->id . ");
+            }
             // KEYBOARD SHORTCUTS
             key('" . $_SESSION['prefs']['shortcuts']['create'] . "', function(){location.href = 'app/controllers/ExperimentsController?create=true'});
             key('" . $_SESSION['prefs']['shortcuts']['submit'] . "', function(){document.forms['editXP'].submit()});
@@ -574,6 +582,13 @@ class ExperimentsView extends EntityView
                 // keyboard shortcut to insert today's date at cursor in editor
                 setup : function(editor) {
                     editor.addShortcut('ctrl+shift+d', 'add date at cursor', function() { addDateOnCursor(); });
+                    editor.on('keydown', function(event) {
+                        clearTimeout(typingTimer);
+                    });
+                    editor.on('keyup', function(event) {
+                        clearTimeout(typingTimer);
+                        typingTimer = setTimeout(doneTyping, doneTypingInterval);
+                    });
                 },
                 mentions: {
                     source: [" . getDbList('mention') . "],
@@ -627,9 +642,9 @@ class ExperimentsView extends EntityView
                     $html .= "<li class='list-group-item'>" . $link['name'] . " - <a href='database.php?mode=view&id=" . $link['itemid'] . "'>" .
                         $link['title'] . "</a>";
                     $html .= "<a onClick=\"experimentsDestroyLink(" . $link['linkid'] . ", " . $id . ", '" . _('Delete this?') . "')\">
-                    <img class='align_right' src='img/small-trash.png' title='delete' alt='delete' /></a></li>";
+                    <img class='align_right' src='app/img/small-trash.png' title='delete' alt='delete' /></a></li>";
                 } else {
-                    $html .= "<li class='list-group-item'><img src='img/link.png'> " . $link['name'] . " - <a href='database.php?mode=view&id=" . $link['itemid'] . "'>" .
+                    $html .= "<li class='list-group-item'><img src='app/img/link.png'> " . $link['name'] . " - <a href='database.php?mode=view&id=" . $link['itemid'] . "'>" .
                     $link['title'] . "</a></li>";
                 }
             }
@@ -714,7 +729,7 @@ class ExperimentsView extends EntityView
         //  we need to add a container here so the reload function in the callback of .editable() doesn't mess things up
         $html = "<section id='expcomment_container'>";
         $html .= "<div id='expcomment' class='box'>";
-        $html .= "<h3><img src='img/comment.png' alt='comment' />" . _('Comments') . "</h3>";
+        $html .= "<h3><img src='app/img/comment.png' alt='comment' />" . _('Comments') . "</h3>";
 
         if (is_array($commentsArr)) {
             // there is comments to display
@@ -723,7 +738,7 @@ class ExperimentsView extends EntityView
                     $comment['firstname'] = '[deleted]';
                 }
                 $html .= "<div class='expcomment_box'>
-                    <img class='align_right' src='img/small-trash.png' ";
+                    <img class='align_right' src='app/img/small-trash.png' ";
                 $html .= "title='delete' alt='delete' onClick=\"commentsDestroy(" .
                     $comment['id'] . ", " . $this->Experiments->id . ", '" . _('Delete this?') . "')\" />";
                 $html .= "<span>On " . $comment['datetime'] . " " . $comment['firstname'] . " " .

@@ -4,7 +4,7 @@
  *
  * @author Nicolas CARPi <nicolas.carpi@curie.fr>
  * @copyright 2012 Nicolas CARPi
- * @see http://www.elabftw.net Official website
+ * @see https://www.elabftw.net Official website
  * @license AGPL-3.0
  * @package elabftw
  */
@@ -271,6 +271,7 @@ nav a:hover {
 #big_search input:focus {
     width:100%;
 }
+
 /*  MENU is below main nav */
 menu {
     line-height:200%;

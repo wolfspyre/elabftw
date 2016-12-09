@@ -2,7 +2,7 @@
 /********************************************************************************
 *                                                                               *
 *   Copyright 2012 Nicolas CARPi (nicolas.carpi@gmail.com)                      *
-*   http://www.elabftw.net/                                                     *
+*   https://www.elabftw.net/                                                     *
 *                                                                               *
 ********************************************************************************/
 
@@ -42,7 +42,7 @@ $errflag = false;
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="author" content="Nicolas CARPi" />
 <meta name='referrer' content='origin'>
-<link rel="icon" type="image/ico" href="../img/favicon.ico" />
+<link rel="icon" type="image/ico" href="../app/img/favicon.ico" />
 <title>eLabFTW - INSTALL</title>
 <!-- CSS -->
 <!-- Bootstrap -->
@@ -58,7 +58,7 @@ $errflag = false;
 <body>
 <section id="container" class='container'>
 <section id='real_container'>
-<center><img src='../img/logo.png' alt='elabftw' title='elabftw' /></center>
+<center><img src='../app/img/logo.png' alt='elabftw' title='elabftw' /></center>
 <h2>Welcome to the install of eLabFTW</h2>
 
 <?php
@@ -139,7 +139,7 @@ try {
             display_message('ok_nocross', $message);
         } else { // failed at creating the folder
             $message = "Failed creating <em>uploads/</em> directory. You need to do it manually. 
-                <a href='../doc/_build/html/faq.html#failed-creating-uploads-directory'>Click here to discover how.</a>";
+                <a href='https://elabftw.readthedocs.io/en/stable/faq.html#failed-creating-uploads-directory'>Click here to discover how.</a>";
             $errflag = true;
         }
     }
@@ -149,7 +149,7 @@ try {
     foreach ($extensionArr as $ext) {
         if (!extension_loaded($ext)) {
             $message = "The <em>" . $ext . "</em> extension is <strong>NOT</strong> loaded.
-                    <a href='../doc/_build/html/faq.html#extension-is-not-loaded'>Click here to read how to fix this.</a>";
+                    <a href='https://elabftw.readthedocs.io/en/stable/faq.html#extension-is-not-loaded'>Click here to read how to fix this.</a>";
             $errflag = true;
         }
     }

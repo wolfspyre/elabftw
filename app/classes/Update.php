@@ -4,7 +4,7 @@
  *
  * @author Nicolas CARPi <nicolas.carpi@curie.fr>
  * @copyright 2012 Nicolas CARPi
- * @see http://www.elabftw.net Official website
+ * @see https://www.elabftw.net Official website
  * @license AGPL-3.0
  * @package elabftw
  */
@@ -25,10 +25,8 @@ class Update
 {
     /** 1.1.4 */
     private $version;
-    /** the url line from the updates.ini file with link to archive */
-    protected $url;
-    /** sha512sum of the archive we should expect */
-    protected $sha512;
+    /** release date of the version */
+    protected $releaseDate;
 
     /** our favorite pdo object */
     private $pdo;
@@ -59,7 +57,7 @@ class Update
      * UPDATE IT ALSO IN INSTALL/ELABFTW.SQL (last line)
      * /////////////////////////////////////////////////////
      */
-    const REQUIRED_SCHEMA = '11';
+    const REQUIRED_SCHEMA = '12';
 
     /**
      * Create the pdo object
@@ -140,15 +138,18 @@ class Update
         if (!$ini) {
             $ini = $this->get(self::URL_HTTP);
         }
+        if (!$ini) {
+            $this->success = false;
+            throw new Exception('Error getting latest version information from server! Check the proxy setting.');
+        }
         // convert ini into array. The `true` is for process_sections: to get multidimensionnal array.
         $versions = parse_ini_string($ini, true);
-        // get the latest version (first item in array, an array itself with url and checksum)
+        // get the latest version
         $this->version = array_keys($versions)[0];
-        $this->sha512 = substr($versions[$this->version]['sha512'], 0, 128);
-        $this->url = $versions[$this->version]['url'];
+        $this->releaseDate = $versions[$this->version]['date'];
 
         if (!$this->validateVersion()) {
-            throw new Exception('Error getting latest version information from server!');
+            throw new Exception('Error getting latest version information from server! Check the proxy setting.');
         }
         $this->success = true;
     }
@@ -181,6 +182,16 @@ class Update
     public function getLatestVersion()
     {
         return $this->version;
+    }
+
+    /**
+     * Get when the latest version was released
+     *
+     * @return string
+     */
+    public function getReleaseDate()
+    {
+        return $this->releaseDate;
     }
 
     /**
@@ -244,6 +255,11 @@ class Update
             // 20160812
             $this->schema11();
             $this->updateSchema(11);
+        }
+        if ($current_schema < 12) {
+            // 20161016
+            $this->schema12();
+            $this->updateSchema(12);
         }
 
         // place new schema functions above this comment
@@ -490,6 +506,18 @@ define('SECRET_KEY', '" . $new_key->saveToAsciiSafeString() . "');
         $sql = "ALTER TABLE `users` ADD `show_team` TINYINT NOT NULL DEFAULT '0'";
         if (!$this->pdo->q($sql)) {
             throw new Exception('Problem updating to schema 11!');
+        }
+    }
+    /**
+     * Change path to pki cert
+     *
+     */
+    private function schema12()
+    {
+        if (get_config('stampcert') == 'vendor/pki.dfn.pem') {
+            if (!update_config(array('stampcert' => 'app/dfn-cert/pki.dfn.pem'))) {
+                throw new Exception('Error changing path to timestamping cert. (updating to schema 12)');
+            }
         }
     }
 }

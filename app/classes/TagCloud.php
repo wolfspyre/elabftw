@@ -4,7 +4,7 @@
  *
  * @author Nicolas CARPi <nicolas.carpi@curie.fr>
  * @copyright 2012 Nicolas CARPi
- * @see http://www.elabftw.net Official website
+ * @see https://www.elabftw.net Official website
  * @license AGPL-3.0
  * @package elabftw
  */
@@ -73,7 +73,7 @@ class TagCloud
         $tags = $this->readAll();
 
         $html = "<section class='box'>";
-        $html .= "<img src='img/cloud.png' alt='' /> <h4 style='display:inline'>" . _('Tag cloud') . "</h4>";
+        $html .= "<img src='app/img/cloud.png' alt='' /> <h4 style='display:inline'>" . _('Tag cloud') . "</h4>";
         $html .= "<hr>";
         $html .= "<div>";
 

@@ -1,6 +1,6 @@
 ![elabftw logo](https://i.imgur.com/hq6SAZf.png)
 
-###[Official website](http://www.elabftw.net) | [Live demo](https://demo.elabftw.net) | [Documentation](https://elabftw.readthedocs.io)
+###[Official website](https://www.elabftw.net) | [Live demo](https://demo.elabftw.net) | [Documentation](https://elabftw.readthedocs.io)
 
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/elabftw/elabftw/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/elabftw/elabftw/?branch=master)
 [![Build Status](https://scrutinizer-ci.com/g/elabftw/elabftw/badges/build.png?b=master)](https://scrutinizer-ci.com/g/elabftw/elabftw/build-status/master)
@@ -31,11 +31,13 @@ Don't have a server ? That's okay, you can use an old computer with 1 Go of RAM 
 
 # Installation
 
-[Read the documentation, it's very complete](https://elabftw.readthedocs.io).
+**eLabFTW** can easily be installed on any GNU/Linux server. The documentation explains everything:
+
+## [Installation instructions](https://elabftw.readthedocs.io)
 
 # Contributing
 
-**eLabFTW** is a collaborative project. See the [contributing page](https://elabftw.readthedocs.io/en/hypernext/contributing.html).
+**eLabFTW** is a collaborative project. See the [contributing page](https://elabftw.readthedocs.io/en/latest/contributing.html).
 
 # Support
 

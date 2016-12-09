@@ -4,7 +4,7 @@
  *
  * @author Nicolas CARPi <nicolas.carpi@curie.fr>
  * @copyright 2012 Nicolas CARPi
- * @see http://www.elabftw.net Official website
+ * @see https://www.elabftw.net Official website
  * @license AGPL-3.0
  * @package elabftw
  */
@@ -81,9 +81,9 @@ class EntityView
             $html .= "<a name='anchor'></a>";
             $html .= "<p class='inline'>" . _('Export this result:') . " </p>";
             $html .= "<a class='elab-tooltip' href='make.php?what=zip&id=" . Tools::buildStringFromArray($idArr) . "&type=" . $type . "'>";
-            $html .= " <span>Make a ZIP</span><img src='img/zip.png' alt='ZIP' /></a>";
+            $html .= " <span>Make a ZIP</span><img src='app/img/zip.png' alt='ZIP' /></a>";
             $html .= "<a class='elab-tooltip' href='make.php?what=csv&id=" . Tools::buildStringFromArray($idArr) . "&type=" . $type . "'>";
-            $html .= " <span>Export in CSV</span><img src='img/spreadsheet.png' alt='Export CSV' /></a></div>";
+            $html .= " <span>Export in CSV</span><img src='app/img/spreadsheet.png' alt='Export CSV' /></a></div>";
 
             return $html;
     }
@@ -140,7 +140,7 @@ class EntityView
         $html = "<div class='row'>";
 
         // LEFT MENU - CREATE NEW
-        $html .= "<div class='col-md-2'>";
+        $html .= "<div class='col-md-2 col-xs-2'>";
         $html .= "<div class='dropdown'>";
         $html .= "<button class='btn btn-default dropdown-toggle' type='button' id='dropdownMenu1' data-toggle='dropdown' aria-haspopup='true' aria-expanded='true'>";
         $html .= _('Create new');
@@ -153,7 +153,7 @@ class EntityView
 
         // RIGHT MENU
         // padding 0 is necessary to get the menu fully to the right
-        $html .= "<div class='col-md-10' style='padding:0'>";
+        $html .= "<div class='col-md-10 col-xs-12' style='padding:0'>";
 
         // FILTERS
         $html .= "<div class='col-md-10 align_right'>";
@@ -261,7 +261,7 @@ class EntityView
 
         if ($mode === 'view') {
 
-            $html = "<span class='tags'><img src='img/tags.png' alt='tags' /> ";
+            $html = "<span class='tags'><img src='app/img/tags.png' alt='tags' /> ";
             foreach ($tagList as $tag) {
                 if ($type === 'experiments') {
                     $html .= "<a href='experiments.php?mode=show&tag=" . urlencode(stripslashes($tag['tag'])) . "'>" . stripslashes($tag['tag']) . "</a> ";
@@ -275,7 +275,7 @@ class EntityView
         }
 
 
-        $html = "<img src='img/tags.png' alt='tags' /><label for='addtaginput'>" . _('Tags') . "</label>";
+        $html = "<img src='app/img/tags.png' alt='tags' /><label for='addtaginput'>" . _('Tags') . "</label>";
         $html .= "<div class='tags'><span id='tags_div'>";
 
         foreach ($tagList as $tag) {
@@ -303,7 +303,7 @@ class EntityView
         }
 
         $html = "<a href='" . $type . ".php?mode=show'>";
-        $html .= "<img src='img/arrow-left-blue.png' alt='' /> " . $text . "</a>";
+        $html .= "<img src='app/img/arrow-left-blue.png' alt='' /> " . $text . "</a>";
 
         return $html;
     }

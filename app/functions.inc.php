@@ -4,7 +4,7 @@
  *
  * @author Nicolas CARPi <nicolas.carpi@curie.fr>
  * @copyright 2012 Nicolas CARPi
- * @see http://www.elabftw.net Official website
+ * @see https://www.elabftw.net Official website
  * @license AGPL-3.0
  */
 namespace Elabftw\Elabftw;
@@ -100,7 +100,7 @@ function update_config($post)
 
     if (isset($post['stamppass']) && !empty($post['stamppass'])) {
         $post['stamppass'] = Crypto::encrypt($post['stamppass'], Key::loadFromAsciiSafeString(SECRET_KEY));
-    } else {
+    } elseif (isset($post['stamppass'])) {
         $post['stamppass'] = $Teams->read('stamppass');
     }
 

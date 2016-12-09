@@ -4,7 +4,7 @@
  *
  * @author Nicolas CARPi <nicolas.carpi@curie.fr>
  * @copyright 2012 Nicolas CARPi
- * @see http://www.elabftw.net Official website
+ * @see https://www.elabftw.net Official website
  * @license AGPL-3.0
  */
 ?>
@@ -27,11 +27,11 @@
     <p class='footer_left'>
     <a class='elab-tooltip-top' href='https://twitter.com/elabftw'>
         <span>Follow eLabFTW on Twitter!</span>
-    <img src='img/twitter.png' alt='twitter' />
+    <img src='app/img/twitter.png' alt='twitter' />
     </a>
      <a class='elab-tooltip-top' href='https://github.com/elabftw/elabftw'>
         <span>eLabFTW on GitHub</span>
-    <img src='img/github.png' alt='github' />
+    <img src='app/img/github.png' alt='github' />
     </a>
     <span>
         <span>
@@ -52,7 +52,7 @@ if (isset($_SESSION['auth']) && $_SESSION['is_admin']) {
     echo "</a>";
 }
 echo "</span></p><div class='footer_right'>";
-echo _('Powered by') . " <a href='http://www.elabftw.net'>eLabFTW</a><br>";
+echo _('Powered by') . " <a href='https://www.elabftw.net'>eLabFTW</a><br>";
 echo _('Page generated in') . ' '; ?>
 <span class='strong'><?= round((microtime(true) - $_SERVER["REQUEST_TIME_FLOAT"]), 5) ?> seconds</span>
 (<?= $pdo->getNumberOfQueries() ?> SQL)

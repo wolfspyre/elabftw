@@ -4,7 +4,7 @@
  *
  * @author Nicolas CARPi <nicolas.carpi@curie.fr>
  * @copyright 2012 Nicolas CARPi
- * @see http://www.elabftw.net Official website
+ * @see https://www.elabftw.net Official website
  * @license AGPL-3.0
  * @package elabftw
  */
@@ -33,7 +33,7 @@ die();
 // END DEMO BLOCK
 ?>
 
-<menu class='border'><a href='login.php'><img src='img/arrow-left-blue.png' alt='' /> <?php echo _('go back to login page'); ?></a></menu>
+<menu class='border'><a href='login.php'><img src='app/img/arrow-left-blue.png' alt='' /> <?php echo _('go back to login page'); ?></a></menu>
 <section class='center'>
     <h2><?php echo _('Create your account'); ?></h2><br><br>
     <!-- Register form -->

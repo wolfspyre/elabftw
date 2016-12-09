@@ -4,7 +4,7 @@
  *
  * @author Nicolas CARPi <nicolas.carpi@curie.fr>
  * @copyright 2012 Nicolas CARPi
- * @see http://www.elabftw.net Official website
+ * @see https://www.elabftw.net Official website
  * @license AGPL-3.0
  * @package elabftw
  */
@@ -31,7 +31,7 @@ try {
 
     // USER INFOS
     echo "<section class='box'>";
-    echo "<img src='img/user.png' alt='user' /> <h4 style='display:inline'>" . _('Infos') . "</h4>";
+    echo "<img src='app/img/user.png' alt='user' /> <h4 style='display:inline'>" . _('Infos') . "</h4>";
     echo "<hr>";
     echo "<div>
         <p>".$user['firstname'] . " " . $user['lastname'] . " (" . $user['email'] . ")</p>

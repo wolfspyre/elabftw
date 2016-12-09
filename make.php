@@ -4,7 +4,7 @@
  *
  * @author Nicolas CARPi <nicolas.carpi@curie.fr>
  * @copyright 2012 Nicolas CARPi
- * @see http://www.elabftw.net Official website
+ * @see https://www.elabftw.net Official website
  * @license AGPL-3.0
  * @package elabftw
  */
@@ -46,7 +46,7 @@ try {
         echo "<div class='well' style='margin-top:20px'>";
         echo "<p>" . _('Your file is ready:') . "<br>
                 <a href='app/download.php?type=" . $_GET['what'] . "&f=" . $make->fileName . "&name=" . $make->getCleanName() . "' target='_blank'>
-                <img src='img/download.png' alt='download' /> " . $make->getCleanName() . "</a>
+                <img src='app/img/download.png' alt='download' /> " . $make->getCleanName() . "</a>
                 <span class='filesize'>(" . Tools::formatBytes(filesize($make->filePath)) . ")</span></p>";
         echo "</div>";
     }

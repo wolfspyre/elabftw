@@ -4,7 +4,7 @@
  *
  * @author Nicolas CARPi <nicolas.carpi@curie.fr>
  * @copyright 2012 Nicolas CARPi
- * @see http://www.elabftw.net Official website
+ * @see https://www.elabftw.net Official website
  * @license AGPL-3.0
  */
 namespace Elabftw\Elabftw;
@@ -17,7 +17,7 @@ namespace Elabftw\Elabftw;
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name='referrer' content='origin'>
-<link rel="icon" type="image/ico" href="img/favicon.ico" />
+<link rel="icon" type="image/ico" href="app/img/favicon.ico" />
 <?php
 echo "<title>" . (isset($page_title) ? $page_title : "Lab manager") . " - eLab " . Tools::getFtw() . "</title>";
 ?>
@@ -100,16 +100,17 @@ if (isset($_SESSION['auth'])) {
     ?>
     <div class="user-nav">
         <?= _('Howdy,') . ' ' ?><a class="elab-tooltip" href='profile.php' ><span>My Profile</span><?= $_SESSION['firstname'] ?></a><br>
-        <a class="elab-tooltip" href='ucp.php'><span>Settings</span><img src='img/settings.png' alt='<?= _('Settings') ?>'  /></a> |
+        <a class="elab-tooltip" href='ucp.php'><span>Settings</span><img src='app/img/settings.png' alt='<?= _('Settings') ?>'  /></a> |
         <a class="elab-tooltip" href='#'><strong class="elab-tooltip" id='help'><span>Help</span>?</strong></a> |
-        <a class="elab-tooltip" href='app/logout.php'><span>Logout</span><img src='img/logout.png' alt='<?= _('Logout') ?>'  /></a>
+        <a class="elab-tooltip" href='app/logout.php'><span>Logout</span><img src='app/img/logout.png' alt='<?= _('Logout') ?>'  /></a>
     </div>
     <div id='help_container' class='well help-container'>
     <p><a href='#' class='close' onClick="$('#help_container').hide();">&times</a>
         <ul>
-        <li class='tip'><?= sprintf(_('There is a manual available %shere%s.'), "<a href='doc/_build/html/manual.html'>", "</a>") ?></li>
+        <li class='tip'><?= sprintf(_('There is a manual available %shere%s.'), "<a href='https://elabftw.readthedocs.io/en/stable/manual.html'>", "</a>") ?></li>
         <li class='tip'><?= _("You can use a TODOlist by pressing 't'.") ?></li>
         <li class='tip'><?= sprintf(_('You can have experiments templates (%sControl Panel%s).'), "<a href='ucp.php?tab=3'>", "</a>") ?></li>
+        <li class='tip'><?= _('You can make links inside the text by typing # and an autocomplete menu will spawn with a list of Experiments/Items.') ?></li>
         <li class='tip'><?= sprintf(_('The admin of a team can edit the status and the types of items available (%sAdmin Panel%s).'), "<a href='admin.php?tab=4'>", "</a>") ?></li>
         <li class='tip'><?= _('If you press Ctrl Shift D in the editor, the date will appear under the cursor.') ?></li>
         <li class='tip'><?= sprintf(_('Custom shortcuts are available (%sControl Panel%s).'), "<a href='ucp.php?tab=1'>", "</a>") ?></li>

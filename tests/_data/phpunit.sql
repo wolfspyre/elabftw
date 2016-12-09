@@ -65,7 +65,7 @@ INSERT INTO `config` (`conf_name`, `conf_value`) VALUES
 ('smtp_password', 'def502005d96345a0fd512ad0ebad66b0c6b227c6ae2d9804ca6dc16c0f50832de54c12c2b56ca5e429145396b7e5fd71e1232bd5e7d84bb336809c7c6b50ee892fe03240ae9622c6d59cc537ef18d69eaaa7eb04bf1bd3d79ea074430a4'),
 ('smtp_port', '587'),
 ('smtp_username', 'phpunit@sandboxf6e3e991ad7f40eb830e6d1f35180d2b.mailgun.org'),
-('stampcert', 'vendor/pki.dfn.pem'),
+('stampcert', 'app/dfn-cert/pki.dfn.pem'),
 ('stamphash', 'sha256'),
 ('stamplogin', ''),
 ('stamppass', ''),
@@ -366,7 +366,7 @@ CREATE TABLE `teams` (
 --
 
 INSERT INTO `teams` (`team_id`, `team_name`, `deletable_xp`, `link_name`, `link_href`, `datetime`, `stamplogin`, `stamppass`, `stampprovider`, `stampcert`, `stamphash`) VALUES
-(1, 'Editme', 1, 'Documentation', 'doc/_build/html/index.html', '2016-07-28 19:23:15', NULL, NULL, NULL, NULL, 'sha256');
+(1, 'Editme', 1, 'Documentation', 'https://elabftw.readthedocs.io', '2016-07-28 19:23:15', NULL, NULL, NULL, NULL, 'sha256');
 
 -- --------------------------------------------------------
 
