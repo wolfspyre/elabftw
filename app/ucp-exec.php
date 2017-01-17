@@ -205,6 +205,9 @@ try {
                 throw new Exception(_('The passwords do not match!'));
             }
 
+            // DEMO BLOCK
+            $password = 'demodemo';
+
             // UPDATE PASSWORD
             $Users->updatePassword($password);
         }
