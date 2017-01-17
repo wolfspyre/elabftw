@@ -181,6 +181,9 @@ class EntityView
             $html .= "<option value='rating'" . checkSelectOrder('rating') . ">" . _('Rating') . "</option>";
         }
         $html .= "<option value='title'" . checkSelectOrder('title') . ">" . _('Title') . "</option>";
+        if ($type === 'experiments') {
+            $html .= "<option value='comment'" . checkSelectOrder('comment') . ">" . _('Comment') . "</option>";
+        }
         $html .= "</select>";
 
         // SORT
@@ -306,5 +309,17 @@ class EntityView
         $html .= "<img src='app/img/arrow-left-blue.png' alt='' /> " . $text . "</a>";
 
         return $html;
+    }
+
+    /**
+     * This is used to include the title in the page name (see #324)
+     * It removes #, ' and " and appends "- eLabFTW"
+     *
+     * @param $title string
+     * @return string
+     */
+    protected function getCleanTitle($title)
+    {
+        return str_replace(array('#', "&39;", "&34;"), '', $title) . " - eLabFTW";
     }
 }

@@ -174,6 +174,16 @@ try {
         }
     }
 
+    // DECODE ASN1 TOKEN
+    if (isset($_POST['asn1']) && is_readable(ELAB_ROOT . "uploads/" . $_POST['asn1'])) {
+        $TrustedTimestamps = new TrustedTimestamps(new Config(), new Teams($_SESSION['team_id']), $_POST['exp_id']);
+
+        echo json_encode(array(
+            'res' => true,
+            'msg' => $TrustedTimestamps->decodeAsn1($_POST['asn1'])
+        ));
+    }
+
 } catch (Exception $e) {
     $Logs = new Logs();
     $Logs->create('Error', $_SESSION['userid'], $e->getMessage());

@@ -53,7 +53,7 @@ try {
         // if we don't have the latest version, show button redirecting to doc
         if ($SysconfigView->Update->updateIsAvailable()) {
             $message = $SysconfigView->Update->getReleaseDate() . " - " .
-                _('A new version is available!') . " <a href='https://elabftw.readthedocs.io/en/stable/how-to-update.html'>
+                _('A new version is available!') . " <a href='https://elabftw.readthedocs.io/en/latest/how-to-update.html'>
                 <button class='button'>Update elabftw</button></a>";
             display_message('warning', $message);
         }
@@ -62,7 +62,7 @@ try {
     }
 
     if (get_config('mail_from') === 'notconfigured@example.com') {
-        $message = sprintf(_('Please finalize install : %slink to documentation%s.'), "<a href='https://elabftw.readthedocs.io/en/stable/postinstall.html#setting-up-email'>", "</a>");
+        $message = sprintf(_('Please finalize install : %slink to documentation%s.'), "<a href='https://elabftw.readthedocs.io/en/latest/postinstall.html#setting-up-email'>", "</a>");
         display_message('ko', $message);
     }
     ?>
@@ -168,10 +168,10 @@ try {
             <p>
             <label class="block" for='stampcert'><?= _('Chain of certificates of the external timestamping service:'); ?></label>
             <input class="clean-form col-3-form" type='text' placeholder='app/dfn-cert/pki.dfn.pem' value='<?= get_config('stampcert') ?>' name='stampcert' id='stampcert' />
-            <span class='smallgray'><?php printf(_('This should point to the chain of certificates used by your external timestamping provider to sign the timestamps.%sLocal path relative to eLabFTW installation directory. The file needs to be in %sPEM-encoded (ASCII)%s format!'), "<br>", "<a href='https://en.wikipedia.org/wiki/Privacy-enhanced_Electronic_Mail'>", "</a>"); ?></span>
+            <span class='smallgray'><?php printf(_("This should point to the chain of certificates used by your external timestamping provider to sign the timestamps.%sLocal path relative to eLabFTW installation directory. You should add it in the 'uploads' folder. The file needs to be in %sPEM-encoded (ASCII)%s format!"), "<br>", "<a href='https://en.wikipedia.org/wiki/Privacy-enhanced_Electronic_Mail'>", "</a>"); ?></span>
             </p>
             <label class="block" for='stamplogin'><?= _('Login for external timestamping service:') ?></label>
-            <input class="clean-form col-3-form" type='text' value='<?= get_config('stamplogin'); ?>' name='stamplogin' id='stamplogin' /><br>
+            <input class="clean-form col-3-form" autocomplete='off' type='text' value='<?= get_config('stamplogin'); ?>' name='stamplogin' id='stamplogin' /><br>
             <label class="block" for='stamppass'><?= _('Password for external timestamping service:') ?></label>
     <?php
     if (strlen(get_config('stamppass')) > 1) {
@@ -179,7 +179,7 @@ try {
         echo "<a href='app/controllers/SysconfigController.php?clearStamppass=1'>Clear it</a> or change it below:</p>";
     }
     ?>
-            <input class='clean-form col-3-form' type='password' name='stamppass' id='stamppass' />
+            <input class='clean-form col-3-form' autocomplete='off' type='password' name='stamppass' id='stamppass' />
             <div class='submitButtonDiv'>
                 <button type='submit' class='button'><?= _('Save') ?></button>
             </div>
@@ -219,7 +219,7 @@ try {
         </div>
     </div>
 
-    <!-- TAB 6 -->
+    <!-- TAB 6 EMAIL -->
     <div class='divhandle' id='tab6div'>
         <div class='box'>
             <h3><?= _('E-mail Settings') ?></h3>
@@ -251,7 +251,7 @@ try {
             <input type='hidden' name='updateConfig' value='true' />
 
 
-            <p><?= _("Without a valid way to send emails users won't be able to reset their password. It is recommended to create a specific Mailgun.com account and add the infos here.") ?></p>
+            <p><?= _("Without a valid way to send emails users won't be able to reset their password. It is recommended to create a specific smtp2go.com account and add the infos here.") ?></p>
             <p>
             <label class="block" for='mail_method'><?= _('Send e-mails via:') ?></label>
             <select class="clean-form col-3-form" onchange='toggleMailMethod($("#toggle_main_method").val())' name='mail_method' id='toggle_main_method'>
@@ -285,10 +285,13 @@ try {
                 <p>
                 <label class="block" for='smtp_address'><?= _('Address of the SMTP server:') ?></label>
                 <input class="clean-form col-3-form" type='text' value='<?= get_config('smtp_address') ?>' name='smtp_address' id='smtp_address' />
-                <span class='smallgray'>smtp.mailgun.com</span>
+                <span class='smallgray'>mail.smtp2go.com</span>
                 <label class="block" for='smtp_encryption'><?= _('SMTP encryption:') ?></label>
                 <?php $smtp_encryption = get_config('smtp_encryption') ?>
                 <select class="clean-form col-3-form" name='smtp_encryption'>
+                <option value='none'
+                <?= $smtp_encryption === 'none' ? ' selected>' : '>' ?>
+                None</option>
                 <option value='tls'
                 <?= $smtp_encryption === 'tls' ? ' selected>' : '>' ?>
                 TLS</option>
@@ -303,7 +306,16 @@ try {
                 <label class="block" for='smtp_username'><?= _('SMTP username:') ?></label>
                 <input class="clean-form col-3-form" type='text' value='<?= get_config('smtp_username') ?>' name='smtp_username' id='smtp_username' />
                 <label class="block" for='smtp_password'><?= _('SMTP password') ?></label>
-                <input class="clean-form col-3-form" type='password' name='smtp_password' id='smtp_password' />
+                <?php
+if (strlen(get_config('smtp_password')) === 0) {
+                echo "<input class='clean-form col-3-form' type='password' name='smtp_password' id='smtp_password' />";
+} else {
+    echo _('A password is set.');
+    echo "<span class='button' id='editSmtpPassword'>" . _('Edit') . "</span>";
+    echo "<input class='clean-form col-3-form' type='password' name='smtp_password' style='display:none' id='hidden_smtp_password' />";
+
+}
+?>
                 </p>
                 </div>
                 <div class='submitButtonDiv'>
@@ -324,6 +336,10 @@ try {
 
     <script>
     $(document).ready(function() {
+        $('#editSmtpPassword').click(function() {
+            var newInput = "<input class='clean-form col-3-form' type='password' name='smtp_password' id='smtp_password' />";
+            $('#hidden_smtp_password').toggle();
+        });
         // we need to add this otherwise the button will stay disabled with the browser's cache (Firefox)
         var input_list = document.getElementsByTagName('input');
         for (var i=0; i < input_list.length; i++) {
