@@ -95,6 +95,8 @@ module.exports = function(grunt) {
           'web/app/css/bootstrap-markdown.min.css': 'node_modules/bootstrap-markdown/css/bootstrap-markdown.min.css',
           'web/app/css/tinymce/skin.min.css': 'node_modules/tinymce/skins/ui/oxide/skin.css',
           'web/app/css/tinymce/content.min.css': 'node_modules/tinymce/skins/ui/oxide/content.css',
+          'web/app/css/tinymce/content.mobile.min.css': 'node_modules/tinymce/skins/ui/oxide/content.mobile.css',
+          'web/app/css/tinymce/skin.mobile.min.css': 'node_modules/tinymce/skins/ui/oxide/skin.mobile.css',
         }
       }
     },
@@ -102,6 +104,10 @@ module.exports = function(grunt) {
       // run yarn install
       yarninstall: {
         command: 'yarn install'
+      },
+      tinymce: {
+        // copy the mobile font file
+        command: 'cp node_modules/tinymce/skins/ui/oxide/fonts/tinymce-mobile.woff web/app/css/tinymce/fonts/tinymce-mobile.woff'
       }
     }
   });
@@ -113,6 +119,7 @@ module.exports = function(grunt) {
 
   // before minifying js it is preferable to do 'yarn install' to update the dependencies
   grunt.registerTask('yarn', 'shell:yarninstall');
-  grunt.registerTask('default', ['yarn', 'uglify', 'cssmin']);
+  grunt.registerTask('default', ['yarn', 'uglify', 'cssmin', 'tinymce']);
   grunt.registerTask('css', 'cssmin');
+  grunt.registerTask('tinymce', 'shell:tinymce');
 };

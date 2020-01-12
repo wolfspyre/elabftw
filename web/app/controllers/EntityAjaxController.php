@@ -70,9 +70,13 @@ try {
     // GET BODY
     if ($Request->query->has('getBody')) {
         $Entity->canOrExplode('read');
+        $body = $Entity->entityData['body'];
+        if ($Request->query->get('editor') === 'tiny') {
+            $body = Tools::md2html($body);
+        }
         $Response->setData(array(
             'res' => true,
-            'msg' => Tools::md2html($Entity->entityData['body']),
+            'msg' => $body,
         ));
     }
 
@@ -191,8 +195,8 @@ try {
     if ($Request->request->has('destroy')) {
 
         // check for deletable xp
-        if ($Entity instanceof Experiments && (!$App->teamConfigArr['deletable_xp'] && !$Session->get('is_admin'))
-            || $App->Config->configArr['deletable_xp'] === '0') {
+        if ($Entity instanceof Experiments && (!$App->teamConfigArr['deletable_xp'] && !$Session->get('is_admin')
+            || $App->Config->configArr['deletable_xp'] === '0')) {
             throw new ImproperActionException('You cannot delete experiments!');
         }
         $Entity->destroy();
